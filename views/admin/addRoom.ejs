@@ -1,0 +1,249 @@
+﻿<%- include('../partials/header') %>
+
+<style>
+nav.navbar { display: none !important; }
+footer.bg-dark { display: none !important; }
+body { padding-bottom: 0 !important; }
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+  --bg-luxury: #fcf9f4;
+  --text-primary: #171817;
+  --text-secondary: #715a3e;
+  --text-muted: #8c8c88;
+  --border-color: rgba(23, 24, 23, 0.1);
+}
+
+body {
+  background-color: var(--bg-luxury) !important;
+  color: var(--text-primary);
+  font-family: 'Manrope', sans-serif;
+}
+
+.font-serif { font-family: 'Noto Serif', serif; }
+.text-primary-luxury { color: var(--text-primary); }
+.text-secondary-luxury { color: var(--text-secondary); }
+.text-muted-luxury { color: var(--text-muted); }
+
+.luxury-sidebar {
+  width: 280px;
+  background-color: var(--bg-luxury);
+  border-right: 1px solid var(--border-color);
+}
+
+.luxury-main { margin-left: 280px; min-height: 100vh; }
+.luxury-header { background: rgba(252, 249, 244, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); }
+
+.nav-link-luxury {
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+}
+
+.nav-link-luxury:hover { color: var(--text-secondary); }
+.nav-link-luxury.active { border-left: 2px solid var(--text-primary); color: var(--text-primary); margin-left: -2px; }
+.nav-link-luxury i { font-size: 1.2rem; margin-right: 1rem; }
+
+.form-control, .form-select {
+  border: 1px solid var(--border-color) !important;
+  border-radius: 0;
+  font-family: 'Manrope', sans-serif;
+}
+.form-control, .form-select {
+  padding: 0.95rem 1rem !important;
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--text-primary) !important;
+  box-shadow: 0 0 0 0.25rem rgba(23, 24, 23, 0.15);
+}
+
+.form-label { font-weight: 700; font-size: 0.9rem; color: var(--text-primary); }
+.admin-footer { margin-left: 280px; width: calc(100% - 280px); }
+
+.btn-luxury-primary {
+  background-color: var(--text-primary);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0;
+  transition: opacity 0.3s;
+}
+.btn-luxury-primary:hover { opacity: 0.9; color: #fff; }
+
+.btn-outline-secondary {
+  color: var(--text-muted);
+  border-color: var(--border-color);
+  border-radius: 0;
+}
+.btn-outline-secondary:hover {
+  background-color: var(--bg-luxury);
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+}
+
+.form-check-input {
+  border: 1px solid var(--border-color);
+  border-radius: 0;
+}
+.form-check-input:checked {
+  background-color: var(--text-primary);
+  border-color: var(--text-primary);
+}
+</style>
+
+<aside class="position-fixed top-0 start-0 h-100 luxury-sidebar d-flex flex-column p-4 p-xl-5">
+  <div class="mb-4">
+    <span class="font-serif fs-3 fw-bold d-block text-primary-luxury mb-1">StayEase</span>
+    <span class="text-muted-luxury text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 0.05em;">Affordable Living</span>
+  </div>
+  
+  <nav class="flex-grow-1 d-flex flex-column gap-3 mt-4">
+    <a href="/admin" class="nav-link-luxury">
+      <i class="bi bi-speedometer2"></i> Dashboard
+    </a>
+    <a href="/admin/rooms" class="nav-link-luxury active">
+      <i class="bi bi-building"></i> Properties
+    </a>
+    <a href="/admin/bookings" class="nav-link-luxury">
+      <i class="bi bi-calendar2-check"></i> Reservations
+    </a>
+  </nav>
+
+  <div class="mt-auto pt-4 border-top border-dark border-opacity-10 d-flex flex-column gap-3">
+    <a href="/" class="nav-link-luxury">
+      <i class="bi bi-box-arrow-right"></i> Sign Out
+    </a>
+  </div>
+</aside>
+
+<main class="luxury-main">
+  <header class="position-sticky top-0 luxury-header px-4 px-xl-5 py-4">
+    <h1 class="font-serif fs-2 fw-bold text-primary-luxury mb-0"><%= room ? 'Edit Room' : 'Add New Room' %></h1>
+  </header>
+
+  <div class="px-4 px-xl-5 py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="bg-white border border-dark border-opacity-10 p-4 p-xl-5">
+          <form action="<%= room ? '/admin/rooms/' + room._id + '?_method=PUT' : '/admin/rooms' %>" method="POST">
+
+            <div class="mb-4">
+              <label class="form-label">PG Name</label>
+              <input type="text" name="name" class="form-control"
+                     value="<%= room ? room.name : '' %>" placeholder="e.g., Cozy Single Room, Shared Double Room" required/>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label">Room Type</label>
+                <select name="type" class="form-select" required>
+                  <option value="">Select Type</option>
+                  <option value="Single" <%= room && room.type === 'Single' ? 'selected' : '' %>>Single Occupancy</option>
+                  <option value="Double" <%= room && room.type === 'Double' ? 'selected' : '' %>>Double Sharing</option>
+                  <option value="Suite" <%= room && room.type === 'Suite' ? 'selected' : '' %>>Triple/Family</option>
+                  <option value="Deluxe" <%= room && room.type === 'Deluxe' ? 'selected' : '' %>>Shared / Family</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Monthly Price (₹)</label>
+                <input type="number" name="monthlyPrice" class="form-control"
+                       value="<%= room ? room.monthlyPrice : '' %>" placeholder="e.g., 25000" min="0" required/>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Utilities Billing</label>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Electricity</label>
+                  <select name="electricityStatus" class="form-select" required>
+                    <option value="included" <%= room && room.utilities && room.utilities.electricity === 'included' ? 'selected' : '' %>>Included</option>
+                    <option value="separate" <%= room && room.utilities && room.utilities.electricity === 'separate' ? 'selected' : '' %>>Separate</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Water</label>
+                  <select name="waterStatus" class="form-select" required>
+                    <option value="included" <%= room && room.utilities && room.utilities.water === 'included' ? 'selected' : '' %>>Included</option>
+                    <option value="separate" <%= room && room.utilities && room.utilities.water === 'separate' ? 'selected' : '' %>>Separate</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Description</label>
+              <textarea name="description" class="form-control" rows="3"
+                        placeholder="Describe the room features and highlights..." required><%= room ? room.description : '' %></textarea>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Image URL</label>
+              <input type="url" name="image" class="form-control"
+                     value="<%= room ? room.image : '' %>" placeholder="https://example.com/room-image.jpg"/>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Amenities (select multiple)</label>
+              <div class="row g-2">
+                <% const allAmenities = ['WiFi', 'AC', 'TV', 'Mini Bar', 'Room Service', 'Parking', 'Pool Access', 'Gym', 'Breakfast']; %>
+                <% allAmenities.forEach(amenity => { %>
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input type="checkbox" name="amenities" value="<%= amenity %>"
+                           class="form-check-input" id="<%= amenity %>"
+                           <%= room && room.amenities.includes(amenity) ? 'checked' : '' %>/>
+                    <label class="form-check-label" for="<%= amenity %>"><%= amenity %></label>
+                  </div>
+                </div>
+                <% }) %>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label">Rating</label>
+                <input type="number" name="rating" class="form-control"
+                       value="<%= room ? room.rating : '4.0' %>" min="1" max="5" step="0.1"/>
+              </div>
+              <% if (room) { %>
+              <div class="col-md-6">
+                <label class="form-label">Availability</label>
+                <div class="form-check form-switch mt-2">
+                  <input type="checkbox" name="isAvailable" class="form-check-input"
+                         id="isAvailable" <%= room.isAvailable ? 'checked' : '' %>/>
+                  <label class="form-check-label" for="isAvailable">Room is Available</label>
+                </div>
+              </div>
+              <% } %>
+            </div>
+
+            <div class="d-flex gap-2 pt-3">
+              <button type="submit" class="btn btn-luxury-primary">
+                <i class="bi bi-check-circle"></i> <%= room ? 'Update Room' : 'Add Room' %>
+              </button>
+              <a href="/admin/rooms" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle"></i> Cancel
+              </a>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>

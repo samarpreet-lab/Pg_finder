@@ -1,0 +1,222 @@
+<%- include('partials/header') %>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap');
+
+  :root {
+    --bg-luxury: #fcf9f4;
+    --text-primary: #171817;
+    --text-secondary: #715a3e;
+    --text-muted: #8c8c88;
+    --border-color: rgba(23, 24, 23, 0.1);
+  }
+
+  body {
+    background-color: var(--bg-luxury) !important;
+    color: var(--text-primary);
+    font-family: 'Manrope', sans-serif;
+  }
+
+  .font-serif { font-family: 'Noto Serif', serif; }
+  .font-sans { font-family: 'Manrope', sans-serif; }
+  .text-primary-luxury { color: var(--text-primary); }
+  .text-secondary-luxury { color: var(--text-secondary); }
+  .text-muted-luxury { color: var(--text-muted); }
+
+  .main-content {
+    background-color: var(--bg-luxury);
+    min-height: 100vh;
+  }
+
+  .btn-luxury-primary {
+    background-color: var(--text-primary);
+    color: white;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    font-size: 0.75rem;
+    transition: background-color 0.3s;
+  }
+
+  .btn-luxury-primary:hover {
+    background-color: var(--text-secondary);
+    color: white;
+  }
+
+  .badge-luxury {
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.75rem;
+    font-weight: 700;
+  }
+
+  .badge-confirmed {
+    background-color: #d7e7d5;
+    color: #121e14;
+  }
+
+  .badge-pending {
+    background-color: #fdddb9;
+    color: #786044;
+  }
+
+  .luxury-card {
+    background: #fff;
+    box-shadow: 0 0 0 1px rgba(23, 24, 23, 0.06);
+    border: none;
+    border-radius: 0;
+  }
+
+  .confirmation-table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .confirmation-table tr {
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .confirmation-table th {
+    background-color: transparent;
+    color: var(--text-primary);
+    font-weight: 700;
+    padding: 1rem;
+    text-align: left;
+    width: 30%;
+  }
+
+  .confirmation-table td {
+    padding: 1rem;
+    color: var(--text-primary);
+  }
+
+  .confirmation-table code {
+    background-color: #f5f3ee;
+    color: var(--text-secondary);
+    padding: 0.25rem 0.5rem;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.85rem;
+  }
+
+  .success-icon {
+    color: #d7e7d5;
+    font-size: 3rem;
+  }
+
+  .utilities-card {
+    background-color: #f5f3ee;
+    border: 1px solid var(--border-color);
+    border-radius: 0;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .utilities-card h6 {
+    font-family: 'Noto Serif', serif;
+    color: var(--text-primary);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .utilities-card p {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .utilities-card strong {
+    color: var(--text-primary);
+  }
+</style>
+
+<main class="main-content">
+
+<div class="container-fluid py-5 px-4 px-xl-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="luxury-card p-5 text-center">
+        <div class="mb-4">
+          <i class="bi bi-check-circle-fill badge-confirmed" style="font-size: 4rem;"></i>
+        </div>
+        <h2 class="font-serif fw-bold text-primary-luxury mb-2" style="font-size: 2rem;">Booking Confirmed!</h2>
+        <p class="text-muted-luxury mb-4">Your booking has been placed successfully.</p>
+
+        <div class="table-responsive">
+          <table class="confirmation-table w-100">
+            <tr>
+              <th>Booking ID</th>
+              <td><code><%= booking._id %></code></td>
+            </tr>
+            <tr>
+              <th>Guest Name</th>
+              <td class="font-serif fw-bold"><%= booking.guestName %></td>
+            </tr>
+            <tr>
+              <th>Room</th>
+              <td class="font-serif fw-bold"><%= booking.room.name %> <span class="badge badge-luxury badge-pending">(<%= booking.room.type %>)</span></td>
+            </tr>
+            <tr>
+              <th>Move-In Date</th>
+              <td><%= new Date(booking.checkIn).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %></td>
+            </tr>
+            <tr>
+              <th>Move-Out Date</th>
+              <td><%= new Date(booking.checkOut).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %></td>
+            </tr>
+            <tr>
+              <th>Guests</th>
+              <td><%= booking.guests %></td>
+            </tr>
+            <tr>
+              <th>Duration</th>
+              <td><%= booking.months %> month<%= booking.months > 1 ? 's' : '' %></td>
+            </tr>
+            <tr>
+              <th>Monthly Rate</th>
+              <td>₹<%= booking.monthlyRate %>/month</td>
+            </tr>
+            <tr>
+              <th>Total Rent</th>
+              <td class="font-serif fw-bold text-secondary-luxury" style="font-size: 1.2rem;">₹<%= booking.totalPrice %></td>
+            </tr>
+            <tr>
+              <th>Status</th>
+              <td>
+                <span class="badge badge-luxury badge-confirmed">
+                  <i class="bi bi-check-circle-fill" style="font-size: 0.7rem;"></i> <%= booking.status %>
+                </span>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Utilities Information -->
+        <% if (booking.utilities) { %>
+        <div class="utilities-card">
+          <h6><i class="bi bi-lightning-charge-fill"></i> Utilities Billing</h6>
+          <p class="mb-2">
+            <strong>Electricity:</strong>
+            <span class="badge badge-luxury badge-confirmed" style="margin-left: 0.5rem;"><%= booking.utilities.electricity %></span>
+          </p>
+          <p class="mb-3">
+            <strong>Water:</strong>
+            <span class="badge badge-luxury badge-confirmed" style="margin-left: 0.5rem;"><%= booking.utilities.water %></span>
+          </p>
+          <p class="text-muted-luxury small mb-0">Note: <%= booking.utilities.description %></p>
+        </div>
+        <% } %>
+
+        <div class="d-grid gap-2 mt-5">
+          <a href="/rooms" class="btn btn-luxury-primary btn-lg fw-bold">
+            <i class="bi bi-house"></i> Browse More Rooms
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<%- include('partials/footer') %>

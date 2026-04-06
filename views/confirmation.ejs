@@ -1,0 +1,205 @@
+<%- include('partials/header') %>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap');
+  
+  :root {
+    --bg-luxury: #fcf9f4;
+    --text-primary: #171817;
+    --text-secondary: #715a3e;
+    --text-muted: #8c8c88;
+    --border-color: rgba(23, 24, 23, 0.1);
+  }
+  
+  body {
+    background-color: var(--bg-luxury) !important;
+    color: var(--text-primary);
+    font-family: 'Manrope', sans-serif;
+  }
+  
+  .luxury-main {
+    margin-left: 280px;
+    min-height: 100vh;
+    background-color: var(--bg-luxury);
+  }
+  
+  .font-serif { font-family: 'Noto Serif', serif; }
+  .font-sans { font-family: 'Manrope', sans-serif; }
+  
+  .luxury-card {
+    background: #fff;
+    box-shadow: 0 0 0 1px rgba(23, 24, 23, 0.06);
+    border: none;
+    border-radius: 0;
+  }
+  
+  .btn-luxury-primary {
+    background-color: var(--text-primary);
+    color: white !important;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    font-size: 0.75rem;
+    border-radius: 0;
+    padding: 0.75rem 1.5rem;
+    transition: opacity 0.3s;
+  }
+  
+  .btn-luxury-primary:hover {
+    opacity: 0.9;
+    color: white !important;
+  }
+  
+  .badge-luxury {
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.75rem;
+    font-weight: 700;
+    border-radius: 0;
+  }
+  
+  .badge-confirmed { background-color: #d7e7d5; color: #121e14; }
+  .badge-pending { background-color: #fdddb9; color: #786044; }
+  
+  .table-luxury {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+  }
+  
+  .table-luxury th {
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    padding: 1rem 1.5rem;
+    background: #f5f3ee;
+    border: none;
+    text-align: left;
+    font-weight: 700;
+  }
+  
+  .table-luxury td {
+    font-family: 'Manrope', sans-serif;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+  }
+  
+  .table-luxury code {
+    background-color: #f5f3ee;
+    color: var(--text-secondary);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.85rem;
+    border-radius: 0;
+  }
+</style>
+
+<main class="luxury-main">
+  <div class="container-fluid py-5 px-4 px-xl-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+        
+        <!-- Success Header -->
+        <div class="text-center mb-5">
+          <div class="mb-4" style="width: 80px; height: 80px; background-color: #d7e7d5; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+            <i class="bi bi-check-lg" style="font-size: 2.5rem; color: #121e14;"></i>
+          </div>
+          <h1 class="font-serif fw-bold mt-4" style="font-size: 2.5rem; color: #171817;">Booking Confirmed!</h1>
+          <p class="font-sans mt-3" style="color: #8c8c88; font-size: 1rem;">Your reservation has been placed successfully.</p>
+        </div>
+        
+        <!-- Booking Details Card -->
+        <div class="luxury-card mb-4">
+          <div class="p-4" style="border-bottom: 1px solid var(--border-color);">
+            <span class="font-sans" style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #715a3e;">Reservation Details</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table-luxury">
+              <tr>
+                <th>Booking ID</th>
+                <td><code><%= booking._id %></code></td>
+              </tr>
+              <tr>
+                <th>Guest Name</th>
+                <td class="font-serif fw-bold"><%= booking.guestName %></td>
+              </tr>
+              <tr>
+                <th>Room</th>
+                <td><%= booking.room.name %> <span class="badge badge-luxury badge-pending ms-2"><%= booking.room.type %></span></td>
+              </tr>
+              <tr>
+                <th>Move-In Date</th>
+                <td><%= new Date(booking.checkIn).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %></td>
+              </tr>
+              <tr>
+                <th>Move-Out Date</th>
+                <td><%= new Date(booking.checkOut).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %></td>
+              </tr>
+              <tr>
+                <th>Guests</th>
+                <td><%= booking.guests %> person(s)</td>
+              </tr>
+              <tr>
+                <th>Duration</th>
+                <td><%= booking.months %> month(s)</td>
+              </tr>
+              <tr>
+                <th>Monthly Rate</th>
+                <td>₹<%= booking.monthlyRate %>/month</td>
+              </tr>
+              <tr>
+                <th>Total Rent</th>
+                <td><span class="font-serif fw-bold" style="font-size: 1.5rem; color: #715a3e;">₹<%= booking.totalPrice %></span></td>
+              </tr>
+              <tr>
+                <th>Status</th>
+                <td><span class="badge badge-luxury badge-confirmed"><i class="bi bi-check-circle-fill"></i> <%= booking.status %></span></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- Utilities Information -->
+        <% if (booking.utilities) { %>
+        <div class="luxury-card mb-4">
+          <div class="p-4" style="border-bottom: 1px solid var(--border-color);">
+            <span class="font-sans" style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #715a3e;">
+              <i class="bi bi-lightning-charge-fill"></i> Utilities Billing
+            </span>
+          </div>
+          <div class="p-4">
+            <div class="row g-4">
+              <div class="col-md-6">
+                <p class="font-sans mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8c8c88;">Electricity</p>
+                <span class="badge badge-luxury badge-pending"><%= booking.utilities.electricity %></span>
+              </div>
+              <div class="col-md-6">
+                <p class="font-sans mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8c8c88;">Water</p>
+                <span class="badge badge-luxury badge-pending"><%= booking.utilities.water %></span>
+              </div>
+            </div>
+            <p class="font-sans mt-3 mb-0" style="font-size: 0.85rem; color: #8c8c88;">Note: <%= booking.utilities.description %></p>
+          </div>
+        </div>
+        <% } %>
+
+        <!-- Action Buttons -->
+        <div class="d-flex gap-3 justify-content-center mt-5">
+          <a href="/bookings" class="btn btn-luxury-primary">
+            <i class="bi bi-list-check"></i> View All Bookings
+          </a>
+          <a href="/rooms" class="btn" style="background-color: transparent; color: #171817; border: 1px solid #171817; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; font-size: 0.75rem; border-radius: 0; padding: 0.75rem 1.5rem;">
+            <i class="bi bi-house"></i> Browse More Rooms
+          </a>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

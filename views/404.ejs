@@ -1,0 +1,65 @@
+<%- include('partials/header') %>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap');
+  
+  :root {
+    --bg-luxury: #fcf9f4;
+    --text-primary: #171817;
+    --text-secondary: #715a3e;
+    --text-muted: #8c8c88;
+    --border-color: rgba(23, 24, 23, 0.1);
+  }
+  
+  .luxury-main {
+    margin-left: 280px;
+    min-height: 100vh;
+    background-color: var(--bg-luxury);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .font-serif { font-family: 'Noto Serif', serif; }
+  .font-sans { font-family: 'Manrope', sans-serif; }
+  
+  .btn-luxury-primary {
+    background-color: #171817;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .btn-luxury-primary:hover {
+    opacity: 0.9;
+    color: #fff;
+  }
+</style>
+
+<main class="luxury-main">
+  <div class="container py-5 text-center">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <i class="bi bi-exclamation-triangle-fill" style="font-size: 5rem; color: #fdddb9;"></i>
+        <h1 class="font-serif fw-bold mt-4" style="font-size: 6rem; color: #171817; line-height: 1;">404</h1>
+        <div style="width: 100px; height: 1px; background-color: rgba(113, 90, 62, 0.3); margin: 1.5rem auto;"></div>
+        <h3 class="font-serif mb-4" style="color: #171817; font-size: 1.75rem;">Page Not Found</h3>
+        <p class="font-sans mb-5" style="color: #8c8c88; line-height: 1.6; font-size: 1rem;">
+          The page you are looking for might have been removed, had its name changed, 
+          or is temporarily unavailable.
+        </p>
+        <a href="/" class="btn btn-luxury-primary font-sans">
+          <i class="bi bi-house"></i> Back to Home
+        </a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

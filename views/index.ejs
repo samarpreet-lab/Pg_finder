@@ -1,0 +1,165 @@
+<%- include('partials/header') %>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap');
+  
+  :root {
+    --bg-luxury: #fcf9f4;
+    --text-primary: #171817;
+    --text-secondary: #715a3e;
+    --text-muted: #8c8c88;
+    --border-color: rgba(23, 24, 23, 0.1);
+  }
+  
+  .luxury-main {
+    margin-left: 280px;
+    min-height: 100vh;
+    background-color: var(--bg-luxury);
+  }
+  
+  .font-serif { font-family: 'Noto Serif', serif; }
+  .font-sans { font-family: 'Manrope', sans-serif; }
+</style>
+
+<main class="luxury-main">
+  <!-- Hero Section -->
+  <section style="background-color: #fcf9f4; padding: 4rem 2rem; min-height: 50vh; display: flex; align-items: center;">
+    <div class="container-fluid px-4 px-xl-5">
+      <div class="text-center mb-5">
+        <h1 class="font-serif" style="font-size: 3.5rem; font-weight: bold; color: #171817; margin-bottom: 1rem;">Find Your Perfect PG 🏠</h1>
+        <p class="font-sans" style="font-size: 1rem; color: #8c8c88; margin-bottom: 2rem;">Browse affordable PG rooms across Punjab, check availability, and book your stay instantly.</p>
+      </div>
+
+      <!-- Search Bar -->
+      <form action="/rooms" method="GET" class="row g-3 justify-content-center align-items-end">
+        <div class="col-auto">
+          <select name="type" class="form-select font-sans" style="min-width: 200px; border: 1px solid #e0dbd6; border-radius: 0; padding: 0.75rem; color: #171817;">
+            <option value="">All Room Types</option>
+            <option value="Single">Single Occupancy</option>
+            <option value="Double">Double Sharing</option>
+            <option value="Suite">Triple/Family</option>
+            <option value="Deluxe">Shared / Family</option>
+          </select>
+        </div>
+        <div class="col-auto">
+          <input type="number" name="maxPrice" class="form-control font-sans" 
+                 placeholder="Max Monthly Price (₹)" min="0" style="min-width: 200px; border: 1px solid #e0dbd6; border-radius: 0; padding: 0.75rem; color: #171817;"/>
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn font-sans" style="background-color: #171817; color: white; border: none; border-radius: 0; padding: 0.75rem 2rem; font-weight: 700; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em;">
+            <i class="bi bi-search"></i> Search
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+<!-- Stats Section -->
+<section style="background-color: #f5ede4; padding: 3rem 2rem;">
+  <div class="container-fluid px-4 px-xl-5">
+    <div class="row text-center g-5">
+      <div class="col-md-4">
+        <div class="stat-label font-sans" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; color: #715a3e; font-weight: 700; margin-bottom: 1rem;">Total Rooms</div>
+        <h2 class="font-serif" style="font-size: 4rem; font-weight: bold; color: #171817; margin-bottom: 0.5rem;">50+</h2>
+        <div style="width: 100%; height: 1px; background-color: rgba(197, 199, 194, 0.3); margin: 1rem 0;"></div>
+        <p class="font-sans" style="color: #8c8c88; font-size: 0.75rem;">Rooms Available</p>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-label font-sans" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; color: #715a3e; font-weight: 700; margin-bottom: 1rem;">Happy Residents</div>
+        <h2 class="font-serif" style="font-size: 4rem; font-weight: bold; color: #171817; margin-bottom: 0.5rem;">1000+</h2>
+        <div style="width: 100%; height: 1px; background-color: rgba(197, 199, 194, 0.3); margin: 1rem 0;"></div>
+        <p class="font-sans" style="color: #8c8c88; font-size: 0.75rem;">Satisfied Customers</p>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-label font-sans" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; color: #715a3e; font-weight: 700; margin-bottom: 1rem;">Average Rating</div>
+        <h2 class="font-serif" style="font-size: 4rem; font-weight: bold; color: #171817; margin-bottom: 0.5rem;">4.8 ⭐</h2>
+        <div style="width: 100%; height: 1px; background-color: rgba(197, 199, 194, 0.3); margin: 1rem 0;"></div>
+        <p class="font-sans" style="color: #8c8c88; font-size: 0.75rem;">Customer Rating</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Featured Rooms -->
+<section style="background-color: #fcf9f4; padding: 4rem 2rem;">
+  <div class="container-fluid px-4 px-xl-5">
+    <div class="mb-5">
+      <span class="text-uppercase font-sans" style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; color: #715a3e;">Discover</span>
+      <h2 class="font-serif" style="color: #171817; font-size: 2.5rem; font-weight: bold; margin-top: 0.5rem;">Featured Affordable Rooms</h2>
+    </div>
+    <div class="row g-4">
+      <% rooms.slice(0, 3).forEach(room => { %>
+      <div class="col-md-4">
+        <div class="luxury-card" style="background: white; border-radius: 0; overflow: hidden; box-shadow: 0 0 0 1px rgba(23, 24, 23, 0.06); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 8px 24px rgba(113, 90, 62, 0.12)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 0 1px rgba(23, 24, 23, 0.06)'">
+          <div style="position: relative; overflow: hidden;">
+            <img src="<%= room.image %>" alt="<%= room.name %>" style="width: 100%; height: 280px; object-fit: cover; display: block; transition: transform 0.35s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+            <span class="font-sans" style="position: absolute; top: 1rem; left: 1rem; background-color: rgba(255, 255, 255, 0.95); color: #171817; padding: 0.5rem 0.8rem; border-radius: 0; font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;">
+              <%= room.type === 'Single' ? 'Single Occupancy' : room.type === 'Double' ? 'Double Sharing' : 'Family/Suite' %>
+            </span>
+            <span class="font-serif" style="position: absolute; top: 1rem; right: 1rem; background: rgba(23, 24, 23, 0.85); color: #fff; font-weight: 700; padding: 0.65rem 0.9rem; border-radius: 0; font-size: 0.95rem;">
+              ₹<%= room.monthlyPrice %><span style="font-size: 0.7rem; opacity: 0.9;">/mo</span>
+            </span>
+          </div>
+          <div style="padding: 1.75rem;">
+            <h5 class="font-serif" style="font-size: 1.25rem; font-weight: bold; color: #171817; margin-bottom: 0.75rem;"><%= room.name %></h5>
+            <p class="font-sans" style="font-size: 0.85rem; color: #8c8c88; margin-bottom: 1.25rem;"><%= room.description.substring(0, 80) %>...</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid rgba(23, 24, 23, 0.06);">
+              <span class="font-sans" style="color: #8c8c88; font-size: 0.75rem;"><i class="bi bi-star-fill text-warning"></i> <%= room.rating %> rating</span>
+              <a href="/rooms/<%= room._id %>" class="font-sans" style="display: inline-block; background-color: #171817; color: white; padding: 0.65rem 1.5rem; border-radius: 0; text-decoration: none; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; transition: 0.2s;">
+                View Details
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+    <div class="text-center mt-5">
+      <a href="/rooms" class="font-sans" style="display: inline-block; background-color: #171817; color: white; padding: 0.75rem 2.5rem; text-decoration: none; border-radius: 0; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em;">
+        Browse All Rooms →
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- Why Choose Us -->
+<section style="background-color: #f5ede4; padding: 4rem 2rem;">
+  <div class="container-fluid px-4 px-xl-5">
+    <div class="text-center mb-5">
+      <span class="text-uppercase font-sans" style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; color: #715a3e;">Why Choose Us</span>
+      <h2 class="font-serif" style="color: #171817; font-size: 2.5rem; font-weight: bold; margin-top: 0.5rem;">StayEase PG for Students & Workers</h2>
+    </div>
+    <div class="row g-5">
+      <div class="col-md-3 text-center">
+        <i class="bi bi-shield-check" style="font-size: 3.5rem; color: #171817; display: block; margin-bottom: 1.5rem;"></i>
+        <h5 class="font-sans" style="font-weight: bold; color: #171817; margin-bottom: 0.75rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">Verified Homes</h5>
+        <div style="width: 50px; height: 1px; background-color: rgba(113, 90, 62, 0.3); margin: 0.75rem auto;"></div>
+        <p class="font-sans" style="color: #8c8c88; font-size: 0.85rem;">Homes vetted for students and working professionals across Punjab.</p>
+      </div>
+      <div class="col-md-3 text-center">
+        <i class="bi bi-clock" style="font-size: 3.5rem; color: #171817; display: block; margin-bottom: 1.5rem;"></i>
+        <h5 class="font-sans" style="font-weight: bold; color: #171817; margin-bottom: 0.75rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">Instant Booking</h5>
+        <div style="width: 50px; height: 1px; background-color: rgba(113, 90, 62, 0.3); margin: 0.75rem auto;"></div>
+        <p class="font-sans" style="color: #8c8c88; font-size: 0.85rem;">Book in seconds with instant confirmation.</p>
+      </div>
+      <div class="col-md-3 text-center">
+        <i class="bi bi-cash-coin" style="font-size: 3.5rem; color: #171817; display: block; margin-bottom: 1.5rem;"></i>
+        <h5 class="font-sans" style="font-weight: bold; color: #171817; margin-bottom: 0.75rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">Affordable Rent</h5>
+        <div style="width: 50px; height: 1px; background-color: rgba(113, 90, 62, 0.3); margin: 0.75rem auto;"></div>
+        <p class="font-sans" style="color: #8c8c88; font-size: 0.85rem;">Budget-friendly monthly rooms for students and shared households.</p>
+      </div>
+      <div class="col-md-3 text-center">
+        <i class="bi bi-headset" style="font-size: 3.5rem; color: #171817; display: block; margin-bottom: 1.5rem;"></i>
+        <h5 class="font-sans" style="font-weight: bold; color: #171817; margin-bottom: 0.75rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">24/7 Support</h5>
+        <div style="width: 50px; height: 1px; background-color: rgba(113, 90, 62, 0.3); margin: 0.75rem auto;"></div>
+        <p class="font-sans" style="color: #8c8c88; font-size: 0.85rem;">Round the clock customer support.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<%- include('partials/footer') %>

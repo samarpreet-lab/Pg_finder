@@ -1,0 +1,264 @@
+/* ===== STAYEASE LUXURY DESIGN SYSTEM ===== */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap');
+
+/* Luxury Design Variables */
+:root {
+  --bg-luxury: #fcf9f4;
+  --bg-luxury-light: #f5ede4;
+  --text-primary: #171817;
+  --text-secondary: #715a3e;
+  --text-muted: #8c8c88;
+  --border-color: rgba(23, 24, 23, 0.1);
+  --border-light: rgba(23, 24, 23, 0.06);
+}
+
+/* Base Styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-luxury) !important;
+  color: var(--text-primary);
+  font-family: 'Manrope', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Typography */
+.font-serif { font-family: 'Noto Serif', serif; }
+.font-sans { font-family: 'Manrope', sans-serif; }
+.text-primary-luxury { color: var(--text-primary) !important; }
+.text-secondary-luxury { color: var(--text-secondary) !important; }
+.text-muted-luxury { color: var(--text-muted) !important; }
+
+/* ===== SIDEBAR NAVIGATION ===== */
+.sidebar-nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  color: #8c8c88;
+  text-decoration: none;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
+.sidebar-nav-link:hover {
+  color: var(--text-secondary);
+}
+
+.sidebar-nav-link.active {
+  border-left: 2px solid var(--text-primary);
+  color: var(--text-primary);
+  margin-left: -2px;
+  padding-left: calc(1rem + 2px);
+}
+
+/* ===== LUXURY CARDS ===== */
+.luxury-card {
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--border-light);
+  border: none;
+  border-radius: 0;
+  transition: all 0.3s ease;
+}
+
+.luxury-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 24px rgba(113, 90, 62, 0.12) !important;
+}
+
+/* ===== LUXURY BUTTONS ===== */
+.btn-luxury-primary {
+  background-color: var(--text-primary) !important;
+  color: #fff !important;
+  border: none;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-luxury-primary:hover {
+  opacity: 0.9;
+  color: #fff !important;
+}
+
+.btn-luxury-outline {
+  background-color: transparent;
+  color: var(--text-primary);
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid var(--text-primary);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0;
+  transition: all 0.3s;
+}
+
+.btn-luxury-outline:hover {
+  background-color: var(--text-primary);
+  color: #fff;
+}
+
+/* ===== LUXURY BADGES ===== */
+.badge-luxury {
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.75rem;
+  font-weight: 700;
+  border-radius: 0;
+}
+
+.badge-confirmed { background-color: #d7e7d5; color: #121e14; }
+.badge-pending { background-color: #fdddb9; color: #786044; }
+.badge-cancelled { background-color: #ffdad6; color: #93000a; }
+
+/* ===== LUXURY TABLES ===== */
+.table-luxury {
+  border-collapse: separate;
+  border-spacing: 0 0.9rem;
+  width: 100%;
+}
+
+.table-luxury thead th {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem 1.5rem 0.75rem;
+  background: transparent;
+  font-weight: 700;
+}
+
+.table-luxury tbody tr {
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--border-light);
+}
+
+.table-luxury td {
+  padding: 1.25rem 1.5rem;
+  border: none;
+  vertical-align: middle;
+}
+
+.table-luxury td:first-child,
+.table-luxury th:first-child {
+  padding-left: 2rem;
+}
+
+.table-luxury td:last-child,
+.table-luxury th:last-child {
+  padding-right: 2rem;
+}
+
+/* ===== STAT CARDS ===== */
+.stat-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--text-secondary);
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.stat-value {
+  font-family: 'Noto Serif', serif;
+  font-size: 4.5rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--text-primary);
+}
+
+.stat-divider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(197, 199, 194, 0.3);
+  margin: 1rem 0;
+}
+
+/* ===== FORM CONTROLS ===== */
+.form-control {
+  border: 1px solid var(--border-color);
+  border-radius: 0;
+  background-color: #fff;
+  color: var(--text-primary);
+  font-family: 'Manrope', sans-serif;
+  padding: 0.75rem 1rem;
+}
+
+.form-control:focus {
+  border-color: var(--text-secondary);
+  box-shadow: 0 0 0 0.2rem rgba(113, 90, 62, 0.1);
+}
+
+.form-select {
+  border: 1px solid var(--border-color);
+  border-radius: 0;
+  background-color: #fff;
+  color: var(--text-primary);
+  font-family: 'Manrope', sans-serif;
+}
+
+.form-select:focus {
+  border-color: var(--text-secondary);
+  box-shadow: 0 0 0 0.2rem rgba(113, 90, 62, 0.1);
+}
+
+.form-label {
+  font-family: 'Manrope', sans-serif;
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+/* ===== CUSTOM SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-luxury);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .luxury-main {
+    margin-left: 0 !important;
+  }
+  
+  .luxury-footer {
+    margin-left: 0 !important;
+  }
+  
+  .stat-value {
+    font-size: 3rem;
+  }
+}

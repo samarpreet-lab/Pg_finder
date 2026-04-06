@@ -1,0 +1,286 @@
+﻿<%- include('../partials/header') %>
+<style>
+/* Hide default layout elements so we can use our custom luxury design */
+nav.navbar { display: none !important; }
+footer.bg-dark { display: none !important; }
+body { padding-bottom: 0 !important; }
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+  --bg-luxury: #fcf9f4;
+  --text-primary: #171817;
+  --text-secondary: #715a3e;
+  --text-muted: #8c8c88;
+  --border-color: rgba(23, 24, 23, 0.1);
+}
+
+body {
+  background-color: var(--bg-luxury) !important;
+  color: var(--text-primary);
+  font-family: 'Manrope', sans-serif;
+}
+
+.font-serif { font-family: 'Noto Serif', serif; }
+.font-sans { font-family: 'Manrope', sans-serif; }
+.text-primary-luxury { color: var(--text-primary); }
+.text-secondary-luxury { color: var(--text-secondary); }
+.text-muted-luxury { color: var(--text-muted); }
+
+.luxury-sidebar {
+  width: 280px;
+  background-color: var(--bg-luxury);
+  border-right: 1px solid var(--border-color);
+  z-index: 1040;
+}
+
+.luxury-main {
+  margin-left: 280px;
+  min-height: 100vh;
+}
+
+.luxury-header {
+  background: rgba(252, 249, 244, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 1030;
+}
+
+.nav-link-luxury {
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+}
+
+.nav-link-luxury:hover {
+  color: var(--text-secondary);
+}
+.nav-link-luxury.active {
+  border-left: 2px solid var(--text-primary);
+  color: var(--text-primary);
+  margin-left: -2px; /* Pull back to align due to border */
+}
+.nav-link-luxury i {
+  font-size: 1.2rem;
+  margin-right: 1rem;
+}
+
+.stat-value {
+  font-size: 4.5rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--text-secondary);
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.stat-divider {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(197, 199, 194, 0.3);
+  margin: 1rem 0;
+}
+
+.btn-luxury-primary {
+  background-color: var(--text-primary);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0;
+  transition: opacity 0.3s;
+}
+.btn-luxury-primary:hover {
+  opacity: 0.9;
+  color: #fff;
+}
+
+.table-luxury {
+  border-collapse: separate;
+  border-spacing: 0 0.9rem;
+  width: 100%;
+}
+.table-luxury thead th {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem 1.5rem 0.75rem;
+  background: transparent;
+}
+.table-luxury tbody tr {
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(23, 24, 23, 0.06);
+}
+.table-luxury td {
+  padding: 1.25rem 1.5rem;
+  border: none;
+  vertical-align: middle;
+}
+.table-luxury td:first-child,
+.table-luxury th:first-child {
+  padding-left: 2rem;
+}
+.table-luxury td:last-child,
+.table-luxury th:last-child {
+  padding-right: 2rem;
+}
+.badge-luxury {
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.75rem;
+  font-weight: 700;
+  border-radius: 0;
+}
+.admin-footer { margin-left: 280px; width: calc(100% - 280px); }
+.badge-confirmed { background-color: #d7e7d5; color: #121e14; }
+.badge-pending { background-color: #fdddb9; color: #786044; }
+.badge-cancelled { background-color: #ffdad6; color: #93000a; }
+</style>
+
+<!-- Custom Sidebar -->
+<aside class="position-fixed top-0 start-0 h-100 luxury-sidebar d-flex flex-column p-4 p-xl-5">
+  <div class="mb-4">
+    <span class="font-serif fs-3 fw-bold d-block text-primary-luxury mb-1">StayEase</span>
+    <span class="text-muted-luxury text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 0.05em;">Affordable Living</span>
+  </div>
+  
+  <nav class="flex-grow-1 d-flex flex-column gap-3 mt-4">
+    <a href="/admin" class="nav-link-luxury active">
+      <i class="bi bi-speedometer2"></i> Dashboard
+    </a>
+    <a href="/admin/rooms" class="nav-link-luxury">
+      <i class="bi bi-building"></i> Properties
+    </a>
+    <a href="/admin/bookings" class="nav-link-luxury">
+      <i class="bi bi-calendar2-check"></i> Reservations
+    </a>
+  </nav>
+
+  <div class="mt-auto pt-4 border-top border-dark border-opacity-10 d-flex flex-column gap-3">
+    <a href="/" class="nav-link-luxury">
+      <i class="bi bi-box-arrow-right"></i> Sign Out
+    </a>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<main class="luxury-main">
+  <!-- Header -->
+  <header class="position-sticky top-0 luxury-header px-4 px-xl-5 py-4 d-flex justify-content-between align-items-center">
+    <div>
+      <h1 class="font-serif fs-2 fw-bold text-primary-luxury mb-1">Dashboard Overview</h1>
+      <p class="text-muted-luxury text-uppercase mb-0" style="font-size: 0.65rem; letter-spacing: 0.1em;">
+        <%= new Date().toDateString() %>
+      </p>
+    </div>
+    <div class="d-flex align-items-center gap-4">
+      <div class="text-end d-none d-md-block">
+        <span class="d-block fw-bold text-uppercase text-primary-luxury" style="font-size: 0.65rem; letter-spacing: 0.1em;">Admin Panel</span>
+        <span class="d-block text-muted-luxury text-uppercase" style="font-size: 0.65rem;">Administrator</span>
+      </div>
+      <a href="/admin/rooms/new" class="btn btn-luxury-primary text-decoration-none">Create Booking</a>
+    </div>
+  </header>
+
+  <div class="px-4 px-xl-5 py-5">
+    <!-- Top KPIs -->
+    <div class="row g-5 mb-5 pb-4">
+      <div class="col-md-4">
+        <div class="stat-label">Total Rooms</div>
+        <div class="d-flex align-items-end gap-2">
+          <span class="font-serif text-primary-luxury stat-value"><%= totalRooms %></span>
+          <i class="bi bi-graph-up-arrow text-secondary-luxury fs-5 mb-2"></i>
+        </div>
+        <div class="stat-divider"></div>
+        <p class="text-muted-luxury mb-0" style="font-size: 0.75rem;">Updated property count</p>
+      </div>
+
+      <div class="col-md-4">
+        <div class="stat-label">Total Bookings</div>
+        <div class="d-flex align-items-end gap-2">
+          <span class="font-serif text-primary-luxury stat-value"><%= totalBookings %></span>
+          <i class="bi bi-check-circle-fill text-secondary-luxury fs-5 mb-2"></i>
+        </div>
+        <div class="stat-divider"></div>
+        <p class="text-muted-luxury mb-0" style="font-size: 0.75rem;">All time aggregate views</p>
+      </div>
+
+      <div class="col-md-4">
+        <div class="stat-label">Revenue</div>
+        <div class="d-flex align-items-end gap-2">
+          <span class="font-serif text-primary-luxury stat-value fw-bold">₹<%= typeof revenue !== 'undefined' ? revenue : 0 %></span>
+        </div>
+        <div class="stat-divider"></div>
+        <p class="text-muted-luxury mb-0" style="font-size: 0.75rem;">Lifetime system revenue</p>
+      </div>
+    </div>
+
+    <!-- Recent Bookings Table -->
+    <div class="mb-5">
+      <div class="d-flex justify-content-between align-items-baseline mb-4">
+        <h2 class="font-serif fs-3 fw-bold text-primary-luxury">Recent Bookings</h2>
+        <a href="/admin/bookings" class="text-muted-luxury text-uppercase text-decoration-none border-bottom border-dark pb-1" style="font-size: 0.65rem; letter-spacing: 0.1em; transition: 0.3s;">View all archives</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-borderless table-luxury w-100 mb-0">
+          <thead>
+            <tr>
+              <th>Guest Name</th>
+              <th>Room Category</th>
+              <th>Check In</th>
+              <th>Check Out</th>
+              <th class="text-end">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% recentBookings.forEach(b => { %>
+            <tr class="align-middle">
+              <td>
+                <div class="font-serif fs-5 fw-bold text-primary-luxury"><%= b.guestName %></div>
+                <div class="text-muted-luxury text-uppercase mt-1" style="font-size: 0.65rem;">Guest</div>
+              </td>
+              <td class="text-muted-luxury"><%= b.room?.type || 'N/A' %> - <%= b.room?.name || 'N/A' %></td>
+              <td class="text-muted-luxury"><%= new Date(b.checkIn).toLocaleDateString() %></td>
+              <td class="text-muted-luxury"><%= new Date(b.checkOut).toLocaleDateString() %></td>
+              <td class="text-end">
+                <% if (b.status === 'Confirmed') { %>
+                  <span class="badge-luxury badge-confirmed d-inline-block"><%= b.status %></span>
+                <% } else if (b.status === 'Cancelled') { %>
+                  <span class="badge-luxury badge-cancelled d-inline-block"><%= b.status %></span>
+                <% } else { %>
+                  <span class="badge-luxury badge-pending d-inline-block"><%= b.status %></span>
+                <% } %>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+  </div>
+
+</main>
+
+<%- include('../partials/footer') %>
