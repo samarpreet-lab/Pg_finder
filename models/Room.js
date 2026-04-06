@@ -1,108 +1,121 @@
 const fs = require('fs');
 const path = require('path');
 
-// Load rooms data from JSON file
+const dataPath = path.join(__dirname, '../data/data.json');
+
 function loadRooms() {
-  try {
-    const data = fs.readFileSync(path.join(__dirname, '../data/data.json'), 'utf-8');
-    return JSON.parse(data);
-  } catch (e) {
-    return { rooms: [], bookings: [] };
-  }
+  let data = fs.readFileSync(dataPath, 'utf-8');
+  return JSON.parse(data);
 }
 
-// Save rooms data to JSON file
 function saveRooms(data) {
-  fs.writeFileSync(path.join(__dirname, '../data/data.json'), JSON.stringify(data, null, 2));
+  fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
 }
 
-// Get all rooms
 function getAllRooms() {
-  const data = loadRooms();
+  let data = loadRooms();
   return data.rooms;
 }
 
-// Get room by ID
 function getRoomById(id) {
-  const data = loadRooms();
-  return data.rooms.find(room => room._id === id);
+  let data = loadRooms();
+  for (let i = 0; i < data.rooms.length; i++) {
+    if (data.rooms[i]._id === id) {
+      return data.rooms[i];
+    }
+  }
+  return null;
 }
 
-// Add new room
-function addRoom(name, type, monthlyPrice, description, image = 'https://via.placeholder.com/400x250?text=Room+Image', amenities = ['WiFi'], utilities = { electricity: 'separate', water: 'included', description: 'Check details' }, rating = 4.0) {
-  const data = loadRooms();
-  const newRoom = {
+function addRoom(name, type, monthlyPrice, description, image, amenities, utilities, rating) {
+  let data = loadRooms();
+  
+  let newRoom = {
     _id: 'room' + Date.now(),
-    name,
-    type,
+    name: name,
+    type: type,
     monthlyPrice: parseInt(monthlyPrice),
-    description,
-    image,
-    amenities: Array.isArray(amenities) ? amenities : [amenities],
+    description: description,
+    image: image || 'https://via.placeholder.com/400x250?text=Room+Image',
+    amenities: amenities || ['WiFi'],
     isAvailable: true,
     utilities: utilities || { electricity: 'separate', water: 'included', description: 'Check details' },
-    rating: parseFloat(rating)
+    rating: parseFloat(rating) || 4.0
   };
+  
   data.rooms.push(newRoom);
   saveRooms(data);
   return newRoom;
 }
 
-// Update room
 function updateRoom(id, name, type, monthlyPrice, description, image, amenities, isAvailable, utilities, rating) {
-  const data = loadRooms();
-  const roomIndex = data.rooms.findIndex(room => room._id === id);
-  if (roomIndex !== -1) {
-    data.rooms[roomIndex] = {
-      ...data.rooms[roomIndex],
-      name,
-      type,
-      monthlyPrice: parseInt(monthlyPrice),
-      description,
-      image,
-      amenities: Array.isArray(amenities) ? amenities : [amenities],
-      isAvailable,
-      utilities: utilities || { electricity: 'separate', water: 'included', description: 'Check details' },
-      rating: parseFloat(rating)
-    };
-    saveRooms(data);
-    return data.rooms[roomIndex];
+  let data = loadRooms();
+  
+  for (let i = 0; i < data.rooms.length; i++) {
+    if (data.rooms[i]._id === id) {
+      data.rooms[i].name = name;
+      data.rooms[i].type = type;
+      data.rooms[i].monthlyPrice = parseInt(monthlyPrice);
+      data.rooms[i].description = description;
+      data.rooms[i].image = image;
+      data.rooms[i].amenities = amenities;
+      data.rooms[i].isAvailable = isAvailable;
+      data.rooms[i].utilities = utilities || { electricity: 'separate', water: 'included', description: 'Check details' };
+      data.rooms[i].rating = parseFloat(rating);
+      saveRooms(data);
+      return data.rooms[i];
+    }
   }
   return null;
 }
 
-// Delete room
 function deleteRoom(id) {
-  const data = loadRooms();
-  const filteredRooms = data.rooms.filter(room => room._id !== id);
-  if (filteredRooms.length < data.rooms.length) {
-    data.rooms = filteredRooms;
-    saveRooms(data);
-    return true;
+  let data = loadRooms();
+  let newRooms = [];
+  
+  for (let i = 0; i < data.rooms.length; i++) {
+    if (data.rooms[i]._id !== id) {
+      newRooms.push(data.rooms[i]);
+    }
   }
-  return false;
+  
+  data.rooms = newRooms;
+  saveRooms(data);
+  return true;
 }
 
-// Get available rooms
 function getAvailableRooms() {
-  const data = loadRooms();
-  return data.rooms.filter(room => room.isAvailable);
+  let data = loadRooms();
+  let available = [];
+  
+  for (let i = 0; i < data.rooms.length; i++) {
+    if (data.rooms[i].isAvailable) {
+      available.push(data.rooms[i]);
+    }
+  }
+  return available;
 }
 
-// Get rooms by type
 function getRoomsByType(type) {
-  const data = loadRooms();
-  return data.rooms.filter(room => room.type === type && room.isAvailable);
+  let data = loadRooms();
+  let result = [];
+  
+  for (let i = 0; i < data.rooms.length; i++) {
+    if (data.rooms[i].type === type && data.rooms[i].isAvailable) {
+      result.push(data.rooms[i]);
+    }
+  }
+  return result;
 }
 
 module.exports = {
-  getAllRooms,
-  getRoomById,
-  addRoom,
-  updateRoom,
-  deleteRoom,
-  getAvailableRooms,
-  getRoomsByType,
-  loadRooms,
-  saveRooms
+  getAllRooms: getAllRooms,
+  getRoomById: getRoomById,
+  addRoom: addRoom,
+  updateRoom: updateRoom,
+  deleteRoom: deleteRoom,
+  getAvailableRooms: getAvailableRooms,
+  getRoomsByType: getRoomsByType,
+  loadRooms: loadRooms,
+  saveRooms: saveRooms
 };

@@ -1,57 +1,62 @@
 const fs = require('fs');
 const path = require('path');
 
-// Load all data from JSON file
+const dataPath = path.join(__dirname, '../data/data.json');
+
 function loadData() {
-  try {
-    const data = fs.readFileSync(path.join(__dirname, '../data/data.json'), 'utf-8');
-    return JSON.parse(data);
-  } catch (e) {
-    return { rooms: [], bookings: [] };
-  }
+  let data = fs.readFileSync(dataPath, 'utf-8');
+  return JSON.parse(data);
 }
 
-// Save data to JSON file
 function saveData(data) {
-  fs.writeFileSync(path.join(__dirname, '../data/data.json'), JSON.stringify(data, null, 2));
+  fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
 }
 
-// Get all bookings
 function getAllBookings() {
-  const data = loadData();
+  let data = loadData();
   return data.bookings;
 }
 
-// Get booking by ID
 function getBookingById(id) {
-  const data = loadData();
-  return data.bookings.find(booking => booking._id === id);
+  let data = loadData();
+  for (let i = 0; i < data.bookings.length; i++) {
+    if (data.bookings[i]._id === id) {
+      return data.bookings[i];
+    }
+  }
+  return null;
 }
 
-// Create new booking
-function createBooking(guestName, email, phone, roomId, checkIn, checkOut, guests, months = 1) {
-  const data = loadData();
-  const room = data.rooms.find(r => r._id === roomId);
+function createBooking(guestName, email, phone, roomId, checkIn, checkOut, guests, months) {
+  let data = loadData();
+  let room = null;
+  
+  for (let i = 0; i < data.rooms.length; i++) {
+    if (data.rooms[i]._id === roomId) {
+      room = data.rooms[i];
+      break;
+    }
+  }
   
   if (!room) {
     return null;
   }
 
-  // Calculate total price based on months
-  const totalPrice = months * room.monthlyPrice;
+  let monthCount = parseInt(months) || 1;
+  let totalPrice = monthCount * room.monthlyPrice;
 
-  const newBooking = {
+  let newBooking = {
     _id: 'book' + Date.now(),
-    guestName,
-    email,
-    phone,
+    guestName: guestName,
+    email: email,
+    phone: phone,
     room: roomId,
-    checkIn,
-    checkOut,
+    checkIn: checkIn,
+    checkOut: checkOut,
     guests: parseInt(guests),
-    months: parseInt(months),
+    months: monthCount,
     monthlyRate: room.monthlyPrice,
-    totalPrice,
+    totalPrice: totalPrice,
     utilities: room.utilities,
     status: 'Pending',
     createdAt: new Date().toISOString()
@@ -62,61 +67,92 @@ function createBooking(guestName, email, phone, roomId, checkIn, checkOut, guest
   return newBooking;
 }
 
-// Update booking status
 function updateBookingStatus(id, status) {
-  const data = loadData();
-  const bookingIndex = data.bookings.findIndex(b => b._id === id);
-  if (bookingIndex !== -1) {
-    data.bookings[bookingIndex].status = status;
-    saveData(data);
-    return data.bookings[bookingIndex];
+  let data = loadData();
+  
+  for (let i = 0; i < data.bookings.length; i++) {
+    if (data.bookings[i]._id === id) {
+      data.bookings[i].status = status;
+      saveData(data);
+      return data.bookings[i];
+    }
   }
   return null;
 }
 
-// Delete booking
 function deleteBooking(id) {
-  const data = loadData();
-  const filteredBookings = data.bookings.filter(b => b._id !== id);
-  if (filteredBookings.length < data.bookings.length) {
-    data.bookings = filteredBookings;
-    saveData(data);
-    return true;
+  let data = loadData();
+  let newBookings = [];
+  
+  for (let i = 0; i < data.bookings.length; i++) {
+    if (data.bookings[i]._id !== id) {
+      newBookings.push(data.bookings[i]);
+    }
   }
-  return false;
+  
+  data.bookings = newBookings;
+  saveData(data);
+  return true;
 }
 
-// Get recent bookings
-function getRecentBookings(limit = 5) {
-  const data = loadData();
-  return data.bookings
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, limit);
+function getRecentBookings(limit) {
+  let data = loadData();
+  let bookings = data.bookings;
+  
+  // Sort by createdAt descending
+  for (let i = 0; i < bookings.length - 1; i++) {
+    for (let j = i + 1; j < bookings.length; j++) {
+      let dateA = new Date(bookings[i].createdAt);
+      let dateB = new Date(bookings[j].createdAt);
+      if (dateB > dateA) {
+        let temp = bookings[i];
+        bookings[i] = bookings[j];
+        bookings[j] = temp;
+      }
+    }
+  }
+  
+  let result = [];
+  let count = limit || 5;
+  for (let i = 0; i < bookings.length && i < count; i++) {
+    result.push(bookings[i]);
+  }
+  return result;
 }
 
-// Get bookings by status
 function getBookingsByStatus(status) {
-  const data = loadData();
-  return data.bookings.filter(b => b.status === status);
+  let data = loadData();
+  let result = [];
+  
+  for (let i = 0; i < data.bookings.length; i++) {
+    if (data.bookings[i].status === status) {
+      result.push(data.bookings[i]);
+    }
+  }
+  return result;
 }
 
-// Calculate total revenue
 function calculateRevenue() {
-  const data = loadData();
-  return data.bookings
-    .filter(b => b.status === 'Confirmed')
-    .reduce((sum, b) => sum + b.totalPrice, 0);
+  let data = loadData();
+  let total = 0;
+  
+  for (let i = 0; i < data.bookings.length; i++) {
+    if (data.bookings[i].status === 'Confirmed') {
+      total = total + data.bookings[i].totalPrice;
+    }
+  }
+  return total;
 }
 
 module.exports = {
-  getAllBookings,
-  getBookingById,
-  createBooking,
-  updateBookingStatus,
-  deleteBooking,
-  getRecentBookings,
-  getBookingsByStatus,
-  calculateRevenue,
-  loadData,
-  saveData
+  getAllBookings: getAllBookings,
+  getBookingById: getBookingById,
+  createBooking: createBooking,
+  updateBookingStatus: updateBookingStatus,
+  deleteBooking: deleteBooking,
+  getRecentBookings: getRecentBookings,
+  getBookingsByStatus: getBookingsByStatus,
+  calculateRevenue: calculateRevenue,
+  loadData: loadData,
+  saveData: saveData
 };
