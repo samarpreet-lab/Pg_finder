@@ -1,130 +1,62 @@
 <%- include('partials/header') %>
 
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap');
-  
-  :root {
-    --bg-luxury: #fcf9f4;
-    --text-primary: #171817;
-    --text-secondary: #715a3e;
-    --text-muted: #8c8c88;
-    --border-color: rgba(23, 24, 23, 0.1);
-  }
-  
-  .luxury-main {
-    margin-left: 280px;
-    min-height: 100vh;
-    background-color: var(--bg-luxury);
-  }
-  
-  .font-serif { font-family: 'Noto Serif', serif; }
-  .font-sans { font-family: 'Manrope', sans-serif; }
-  
-  .badge-luxury {
-    font-size: 0.55rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 0.5rem 0.9rem;
-    font-weight: 700;
-    border-radius: 0;
-    background-color: #f5ede4;
-    color: #171817;
-  }
-  
-  .btn-luxury-primary {
-    background-color: #171817;
-    color: #fff;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0;
-    transition: opacity 0.3s;
-  }
-  
-  .btn-luxury-primary:hover {
-    opacity: 0.9;
-    color: #fff;
-  }
-  
-  .btn-luxury-outline {
-    background-color: transparent;
-    color: #171817;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    border: 1px solid #171817;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0;
-    transition: all 0.3s;
-  }
-  
-  .btn-luxury-outline:hover {
-    background-color: #171817;
-    color: #fff;
-  }
-</style>
-
 <main class="luxury-main">
   <div class="container-fluid py-5 px-4 px-xl-5">
   <div class="row g-5">
 
     <!-- Room Image -->
     <div class="col-md-7">
-      <div style="position: relative; overflow: hidden; box-shadow: 0 0 0 1px rgba(23, 24, 23, 0.06);">
-        <img src="<%= room.image %>" class="w-100" alt="<%= room.name %>" style="max-height: 500px; object-fit: cover;"/>
+      <div class="luxury-card-static">
+        <img src="<%= room.image %>" class="w-100 room-detail-image" alt="<%= room.name %>"/>
       </div>
     </div>
 
     <!-- Room Info -->
     <div class="col-md-5">
-      <span class="badge-luxury font-sans mb-3 d-inline-block">
+      <span class="badge-luxury font-sans mb-3 d-inline-block badge-pending">
         <%= room.type === 'Single' ? 'Single Occupancy' : room.type === 'Double' ? 'Double Sharing' : room.type === 'Suite' ? 'Triple / Family' : 'Shared / Family' %>
       </span>
       
-      <h1 class="font-serif fw-bold mb-3" style="color: #171817; font-size: 2.5rem;"><%= room.name %></h1>
+      <h1 class="font-serif fw-bold mb-3 heading-room"><%= room.name %></h1>
       
       <div class="mb-3">
         <% for(let i = 0; i < Math.floor(room.rating); i++) { %>
-          <i class="bi bi-star-fill" style="color: #ffc107;"></i>
+          <i class="bi bi-star-fill text-warning"></i>
         <% } %>
-        <span class="font-sans ms-2" style="color: #8c8c88; font-size: 0.9rem;">(<%= room.rating %>)</span>
+        <span class="font-sans ms-2 text-muted-luxury">(<%= room.rating %>)</span>
       </div>
       
-      <p class="font-sans mb-4" style="color: #8c8c88; line-height: 1.6;"><%= room.description %></p>
+      <p class="font-sans mb-4 text-muted-luxury line-height-16"><%= room.description %></p>
 
       <!-- Price -->
-      <div class="mb-4 p-4" style="background-color: #171817; box-shadow: 0 0 0 1px rgba(23, 24, 23, 0.06);">
-        <div class="stat-label font-sans" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; color: #fcf9f4; font-weight: 700; margin-bottom: 0.5rem;">Monthly Rate</div>
-        <span class="font-serif fw-bold" style="font-size: 3rem; color: #fcf9f4;">₹<%= room.monthlyPrice %></span>
-        <span class="font-sans" style="color: #fcf9f4; opacity: 0.8;"> / month</span>
+      <div class="mb-4 p-4 price-box">
+        <div class="stat-label-light font-sans">Monthly Rate</div>
+        <span class="font-serif fw-bold price-box-large">₹<%= room.monthlyPrice %></span>
+        <span class="font-sans price-box-label"> / month</span>
       </div>
 
       <!-- Utilities Information -->
       <% if (room.utilities) { %>
-      <div class="mb-4 p-4" style="background-color: #f5ede4; border: 1px solid rgba(23, 24, 23, 0.06);">
-        <h6 class="font-sans fw-bold mb-3" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #171817;">
+      <div class="mb-4 p-4 utilities-box">
+        <h6 class="font-sans fw-bold mb-3 utilities-title">
           <i class="bi bi-lightning-charge-fill"></i> Utilities
         </h6>
-        <p class="mb-2 font-sans" style="color: #171817; font-size: 0.85rem;">
-          <strong>Electricity:</strong> <span class="badge" style="background-color: #fdddb9; color: #786044; font-size: 0.7rem; padding: 0.35rem 0.65rem;"><%= room.utilities.electricity %></span>
+        <p class="mb-2 font-sans text-primary-luxury fs-085">
+          <strong>Electricity:</strong> <span class="badge badge-utilities"><%= room.utilities.electricity %></span>
         </p>
-        <p class="mb-0 font-sans" style="color: #171817; font-size: 0.85rem;">
-          <strong>Water:</strong> <span class="badge" style="background-color: #fdddb9; color: #786044; font-size: 0.7rem; padding: 0.35rem 0.65rem;"><%= room.utilities.water %></span>
+        <p class="mb-0 font-sans text-primary-luxury fs-085">
+          <strong>Water:</strong> <span class="badge badge-utilities"><%= room.utilities.water %></span>
         </p>
       </div>
       <% } %>
 
       <!-- Amenities -->
       <div class="mb-4">
-        <h6 class="font-sans fw-bold mb-3" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #171817;">Amenities</h6>
+        <h6 class="font-sans fw-bold mb-3 utilities-title">Amenities</h6>
         <div class="d-flex flex-wrap gap-2">
           <% room.amenities.forEach(a => { %>
-            <span class="badge font-sans" style="background: #fff; color: #171817; border: 1px solid rgba(23, 24, 23, 0.08); font-size: 0.7rem; font-weight: 500; padding: 0.5rem 0.85rem;">
-              <i class="bi bi-check-circle-fill" style="color: #4caf50;"></i> <%= a %>
+            <span class="badge font-sans amenity-badge">
+              <i class="bi bi-check-circle-fill text-success"></i> <%= a %>
             </span>
           <% }) %>
         </div>
@@ -132,8 +64,8 @@
 
       <!-- Availability -->
       <% if (room.isAvailable) { %>
-        <div class="mb-3 p-3" style="background-color: #d7e7d5; border: 1px solid rgba(18, 30, 20, 0.1);">
-          <span class="font-sans" style="color: #121e14; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
+        <div class="mb-3 p-3 availability-available">
+          <span class="font-sans availability-available-text">
             <i class="bi bi-check-circle-fill"></i> Room is Available
           </span>
         </div>
@@ -141,8 +73,8 @@
           <i class="bi bi-calendar-check"></i> Book Now
         </a>
       <% } else { %>
-        <div class="mb-3 p-3" style="background-color: #ffdad6; border: 1px solid rgba(147, 0, 10, 0.1);">
-          <span class="font-sans" style="color: #93000a; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
+        <div class="mb-3 p-3 availability-unavailable">
+          <span class="font-sans availability-unavailable-text">
             <i class="bi bi-x-circle-fill"></i> Currently Unavailable
           </span>
         </div>

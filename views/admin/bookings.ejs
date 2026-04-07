@@ -1,101 +1,9 @@
 ﻿<%- include('../partials/header') %>
 
-<style>
-nav.navbar { display: none !important; }
-footer.bg-dark { display: none !important; }
-body { padding-bottom: 0 !important; }
-
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap');
-
-:root {
-  --bg-luxury: #fcf9f4;
-  --text-primary: #171817;
-  --text-secondary: #715a3e;
-  --text-muted: #8c8c88;
-  --border-color: rgba(23, 24, 23, 0.1);
-}
-
-body {
-  background-color: var(--bg-luxury) !important;
-  color: var(--text-primary);
-  font-family: 'Manrope', sans-serif;
-}
-
-.font-serif { font-family: 'Noto Serif', serif; }
-.text-primary-luxury { color: var(--text-primary); }
-.text-secondary-luxury { color: var(--text-secondary); }
-.text-muted-luxury { color: var(--text-muted); }
-
-.luxury-sidebar {
-  width: 280px;
-  background-color: var(--bg-luxury);
-  border-right: 1px solid var(--border-color);
-}
-
-.luxury-main { margin-left: 280px; min-height: 100vh; }
-.luxury-header { background: rgba(252, 249, 244, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); }
-
-.nav-link-luxury {
-  color: var(--text-muted);
-  font-weight: 700;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  transition: color 0.3s;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-}
-
-.nav-link-luxury:hover { color: var(--text-secondary); }
-.nav-link-luxury.active { border-left: 2px solid var(--text-primary); color: var(--text-primary); margin-left: -2px; }
-.nav-link-luxury i { font-size: 1.2rem; margin-right: 1rem; }
-
-.table-luxury {
-  border-collapse: separate;
-  border-spacing: 0 0.9rem;
-  width: 100%;
-}
-.table-luxury thead th {
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border-color);
-  padding: 1rem 1.5rem 0.75rem;
-  background: transparent;
-}
-.table-luxury tbody tr {
-  background: #fff;
-  box-shadow: 0 0 0 1px rgba(23, 24, 23, 0.06);
-}
-.table-luxury td {
-  padding: 1.25rem 1.5rem;
-  border: none;
-  vertical-align: middle;
-}
-.table-luxury td:first-child,
-.table-luxury th:first-child {
-  padding-left: 2rem;
-}
-.table-luxury td:last-child,
-.table-luxury th:last-child {
-  padding-right: 2rem;
-}
-.badge-luxury { font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.35rem 0.75rem; font-weight: 700; }
-.admin-footer { margin-left: 280px; width: calc(100% - 280px); }
-.badge-confirmed { background-color: #d7e7d5; color: #121e14; }
-.badge-pending { background-color: #fdddb9; color: #786044; }
-.badge-cancelled { background-color: #ffdad6; color: #93000a; }
-
-.form-select-luxury { border: 1px solid var(--border-color); border-radius: 0; }
-</style>
-
 <aside class="position-fixed top-0 start-0 h-100 luxury-sidebar d-flex flex-column p-4 p-xl-5">
   <div class="mb-4">
     <span class="font-serif fs-3 fw-bold d-block text-primary-luxury mb-1">StayEase</span>
-    <span class="text-muted-luxury text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 0.05em;">Affordable Living</span>
+    <span class="text-muted-luxury text-uppercase fw-bold subheading-light">Affordable Living</span>
   </div>
   
   <nav class="flex-grow-1 d-flex flex-column gap-3 mt-4">
@@ -129,52 +37,52 @@ body {
       </div>
     <% } else { %>
     <div class="table-responsive">
-      <table class="table table-borderless w-100 mb-0" style="border-collapse: separate; border-spacing: 0 1rem;">
+      <table class="table table-borderless w-100 mb-0 admin-table-spaced">
         <thead>
           <tr>
-            <th style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8c8c88; font-weight: 700; padding-bottom: 1rem; border-bottom: 1px solid #e0dbd6;">Guest Identity</th>
-            <th style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8c8c88; font-weight: 700; padding-bottom: 1rem; border-bottom: 1px solid #e0dbd6;">Accommodation</th>
-            <th style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8c8c88; font-weight: 700; padding-bottom: 1rem; border-bottom: 1px solid #e0dbd6;">Timeline</th>
-            <th style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8c8c88; font-weight: 700; padding-bottom: 1rem; border-bottom: 1px solid #e0dbd6; text-align: right;">Financials</th>
-            <th style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8c8c88; font-weight: 700; padding-bottom: 1rem; border-bottom: 1px solid #e0dbd6; text-align: right;">Actions</th>
+            <th class="admin-table-header">Guest Identity</th>
+            <th class="admin-table-header">Accommodation</th>
+            <th class="admin-table-header">Timeline</th>
+            <th class="admin-table-header text-end">Financials</th>
+            <th class="admin-table-header text-end">Actions</th>
           </tr>
         </thead>
         <tbody>
           <% bookings.forEach(b => { %>
-          <tr style="background: #fff; box-shadow: 0 0 0 1px rgba(23, 24, 23, 0.06);">
-            <td style="padding: 1.5rem; vertical-align: middle;">
-              <div class="font-serif fw-bold text-primary-luxury" style="margin-bottom: 0.25rem;"><%= b.guestName %></div>
-              <small class="text-muted-luxury"><i class="bi bi-hash" style="font-size: 0.7rem;"></i> <%= b._id.toString().slice(-8) %></small>
+          <tr class="luxury-card-static">
+            <td class="admin-table-cell">
+              <div class="font-serif fw-bold text-primary-luxury mb-1"><%= b.guestName %></div>
+              <small class="text-muted-luxury"><i class="bi bi-hash icon-sm"></i> <%= b._id.toString().slice(-8) %></small>
             </td>
-            <td style="padding: 1.5rem; vertical-align: middle;">
-              <div class="font-serif fw-bold text-primary-luxury" style="margin-bottom: 0.5rem;"><%= b.room?.name || 'Deleted Room' %></div>
+            <td class="admin-table-cell">
+              <div class="font-serif fw-bold text-primary-luxury mb-2"><%= b.room?.name || 'Deleted Room' %></div>
               <% if (b.status === 'Confirmed') { %>
-                <span class="badge" style="background-color: #d7e7d5; color: #121e14; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
-                  <i class="bi bi-check-circle-fill" style="font-size: 0.7rem;"></i> Confirmed
+                <span class="badge badge-confirmed">
+                  <i class="bi bi-check-circle-fill icon-sm"></i> Confirmed
                 </span>
               <% } else if (b.status === 'Cancelled') { %>
-                <span class="badge" style="background-color: #ffdad6; color: #93000a; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
-                  <i class="bi bi-x-circle-fill" style="font-size: 0.7rem;"></i> Cancelled
+                <span class="badge badge-cancelled">
+                  <i class="bi bi-x-circle-fill icon-sm"></i> Cancelled
                 </span>
               <% } else { %>
-                <span class="badge" style="background-color: #fff3cd; color: #856404; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
-                  <i class="bi bi-clock-fill" style="font-size: 0.7rem;"></i> Pending
+                <span class="badge badge-pending">
+                  <i class="bi bi-clock-fill icon-sm"></i> Pending
                 </span>
               <% } %>
             </td>
-            <td style="padding: 1.5rem; vertical-align: middle;">
-              <div style="margin-bottom: 0.25rem;">
+            <td class="admin-table-cell">
+              <div class="mb-1">
                 <small class="text-muted-luxury"><%= new Date(b.checkIn).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %> – <%= new Date(b.checkOut).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %></small>
               </div>
               <div class="font-serif fw-bold text-primary-luxury"><%= b.months %> month<%= b.months > 1 ? 's' : '' %></div>
             </td>
-            <td style="padding: 1.5rem; vertical-align: middle; text-align: right;">
-              <div class="fw-bold text-primary-luxury" style="font-size: 1.1rem; margin-bottom: 0.25rem;">₹<%= b.totalPrice.toLocaleString() %></div>
+            <td class="admin-table-cell text-end">
+              <div class="fw-bold text-primary-luxury price-display mb-1">₹<%= b.totalPrice.toLocaleString() %></div>
               <small class="text-muted-luxury">@ ₹<%= b.monthlyRate %>/month</small>
             </td>
-            <td style="padding: 1.5rem; vertical-align: middle; text-align: right;">
+            <td class="admin-table-cell text-end">
               <form action="/admin/bookings/<%= b._id %>/update" method="POST" class="d-inline">
-                <select name="status" class="form-select form-select-sm" style="width: auto; display: inline-block; border: 1px solid #e0dbd6; border-radius: 4px; font-size: 0.85rem;"
+                <select name="status" class="form-select form-select-sm form-select-luxury d-inline-block w-auto"
                         onchange="this.form.submit()">
                   <option value="Pending" <%= b.status === 'Pending' ? 'selected' : '' %>>Pending</option>
                   <option value="Confirmed" <%= b.status === 'Confirmed' ? 'selected' : '' %>>Confirmed</option>

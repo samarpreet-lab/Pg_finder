@@ -10,6 +10,12 @@
   --text-muted: #8c8c88;
   --border-color: rgba(23, 24, 23, 0.1);
   --border-light: rgba(23, 24, 23, 0.06);
+  --success-bg: #d7e7d5;
+  --success-color: #121e14;
+  --warning-bg: #fdddb9;
+  --warning-color: #786044;
+  --danger-bg: #ffdad6;
+  --danger-color: #93000a;
 }
 
 /* Base Styles */
@@ -32,12 +38,32 @@ body {
 .text-secondary-luxury { color: var(--text-secondary) !important; }
 .text-muted-luxury { color: var(--text-muted) !important; }
 
+/* ===== LAYOUT ===== */
+.luxury-main {
+  margin-left: 280px;
+  min-height: 100vh;
+  background-color: var(--bg-luxury);
+}
+
+.main-content {
+  background-color: var(--bg-luxury);
+  min-height: 100vh;
+}
+
 /* ===== SIDEBAR NAVIGATION ===== */
-.sidebar-nav-link {
+.luxury-sidebar {
+  width: 280px;
+  background-color: var(--bg-luxury);
+  border-right: 1px solid var(--border-color);
+  z-index: 1040;
+}
+
+.sidebar-nav-link,
+.nav-link-luxury {
   display: flex;
   align-items: center;
   padding: 0.5rem 1rem;
-  color: #8c8c88;
+  color: var(--text-muted);
   text-decoration: none;
   font-family: 'Manrope', sans-serif;
   font-size: 0.75rem;
@@ -47,15 +73,36 @@ body {
   transition: color 0.3s;
 }
 
-.sidebar-nav-link:hover {
+.sidebar-nav-link:hover,
+.nav-link-luxury:hover {
   color: var(--text-secondary);
 }
 
-.sidebar-nav-link.active {
+.sidebar-nav-link.active,
+.nav-link-luxury.active {
   border-left: 2px solid var(--text-primary);
   color: var(--text-primary);
   margin-left: -2px;
   padding-left: calc(1rem + 2px);
+}
+
+.nav-link-luxury i {
+  font-size: 1.2rem;
+  margin-right: 1rem;
+}
+
+.nav-icon {
+  font-size: 1.1rem;
+  margin-right: 0.75rem;
+  display: inline-block;
+}
+
+/* ===== LUXURY HEADER ===== */
+.luxury-header {
+  background: rgba(252, 249, 244, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 1030;
 }
 
 /* ===== LUXURY CARDS ===== */
@@ -70,6 +117,20 @@ body {
 .luxury-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 8px 24px rgba(113, 90, 62, 0.12) !important;
+}
+
+.luxury-card-static {
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--border-light);
+  border: none;
+  border-radius: 0;
+}
+
+.luxury-card-static .card-body {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 /* ===== LUXURY BUTTONS ===== */
@@ -92,6 +153,11 @@ body {
   color: #fff !important;
 }
 
+.btn-luxury-primary i {
+  margin-right: 0.5rem;
+  display: inline-block;
+}
+
 .btn-luxury-outline {
   background-color: transparent;
   color: var(--text-primary);
@@ -111,6 +177,19 @@ body {
   color: #fff;
 }
 
+.btn-search {
+  background-color: var(--text-primary);
+  color: white;
+  border: none;
+  border-radius: 0;
+  padding: 0.75rem 2rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+}
+
 /* ===== LUXURY BADGES ===== */
 .badge-luxury {
   font-size: 0.55rem;
@@ -121,9 +200,46 @@ body {
   border-radius: 0;
 }
 
-.badge-confirmed { background-color: #d7e7d5; color: #121e14; }
-.badge-pending { background-color: #fdddb9; color: #786044; }
-.badge-cancelled { background-color: #ffdad6; color: #93000a; }
+.badge-confirmed { background-color: var(--success-bg); color: var(--success-color); }
+.badge-pending { background-color: var(--warning-bg); color: var(--warning-color); }
+.badge-cancelled { background-color: var(--danger-bg); color: var(--danger-color); }
+
+.badge-room-type {
+  background-color: #e8e0f5;
+  color: #483d8b;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.75rem;
+}
+
+.badge-available {
+  background-color: var(--success-bg);
+  color: var(--success-color);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.75rem;
+}
+
+.badge-unavailable {
+  background-color: var(--danger-bg);
+  color: var(--danger-color);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.75rem;
+}
+
+.badge-utilities {
+  background-color: var(--warning-bg);
+  color: var(--warning-color);
+  font-size: 0.7rem;
+  padding: 0.35rem 0.65rem;
+}
 
 /* ===== LUXURY TABLES ===== */
 .table-luxury {
@@ -165,6 +281,25 @@ body {
   padding-right: 2rem;
 }
 
+.table-luxury code {
+  background-color: #f5f3ee;
+  color: var(--text-secondary);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  border-radius: 0;
+}
+
+/* Admin Table Header */
+.admin-table-header {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  font-weight: 700;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0dbd6;
+}
+
 /* ===== STAT CARDS ===== */
 .stat-label {
   font-family: 'Manrope', sans-serif;
@@ -176,6 +311,15 @@ body {
   margin-bottom: 1rem;
 }
 
+.stat-label-light {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--bg-luxury);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
 .stat-value {
   font-family: 'Noto Serif', serif;
   font-size: 4.5rem;
@@ -185,11 +329,35 @@ body {
   color: var(--text-primary);
 }
 
+.stat-value-medium {
+  font-family: 'Noto Serif', serif;
+  font-size: 4rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.stat-value-large {
+  font-family: 'Noto Serif', serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
 .stat-divider {
   width: 100%;
   height: 1px;
   background-color: rgba(197, 199, 194, 0.3);
   margin: 1rem 0;
+}
+
+.stat-card {
+  background-color: #f5f3ee;
+  border: 1px solid var(--border-color);
+  border-radius: 0;
+  padding: 2rem;
+  text-align: center;
 }
 
 /* ===== FORM CONTROLS ===== */
@@ -230,6 +398,905 @@ body {
   margin-bottom: 0.5rem;
 }
 
+.form-check-input {
+  border: 1px solid var(--border-color);
+  border-radius: 0;
+}
+
+.form-check-input:checked {
+  background-color: var(--text-primary);
+  border-color: var(--text-primary);
+}
+
+/* Filter form specific */
+.filter-input {
+  min-width: 200px;
+  border: 1px solid #e0dbd6;
+  border-radius: 0;
+  padding: 0.75rem;
+  color: var(--text-primary);
+}
+
+.filter-label {
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+}
+
+/* ===== SECTIONS ===== */
+.section-hero {
+  background-color: var(--bg-luxury);
+  padding: 4rem 2rem;
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+}
+
+.section-stats {
+  background-color: var(--bg-luxury-light);
+  padding: 3rem 2rem;
+}
+
+.section-featured {
+  background-color: var(--bg-luxury);
+  padding: 4rem 2rem;
+}
+
+.section-why {
+  background-color: var(--bg-luxury-light);
+  padding: 4rem 2rem;
+}
+
+/* ===== HEADINGS ===== */
+.heading-hero {
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.heading-section {
+  color: var(--text-primary);
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.heading-page {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-top: 0.75rem;
+}
+
+.heading-room {
+  color: var(--text-primary);
+  font-size: 2.5rem;
+}
+
+/* ===== SUBHEADINGS ===== */
+.subheading {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--text-secondary);
+}
+
+.subheading-light {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+}
+
+/* ===== TEXT STYLES ===== */
+.text-hero-description {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+
+.text-description {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+}
+
+.text-small-muted {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.text-feature-title {
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ===== ROOM CARDS ===== */
+.room-card-image {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s;
+}
+
+.room-card-image:hover {
+  transform: scale(1.05);
+}
+
+.room-card-image-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.room-card-badge-type {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: var(--text-primary);
+  padding: 0.5rem 0.8rem;
+  border-radius: 0;
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.room-card-badge-price {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(23, 24, 23, 0.85);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.65rem 0.9rem;
+  border-radius: 0;
+  font-size: 0.95rem;
+}
+
+.room-card-body {
+  padding: 1.75rem;
+}
+
+.room-card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.room-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.room-card-link {
+  display: inline-block;
+  background-color: var(--text-primary);
+  color: white;
+  padding: 0.65rem 1.5rem;
+  border-radius: 0;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: 0.2s;
+}
+
+/* Rooms list card */
+.rooms-list-card-image {
+  height: 300px;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
+.rooms-list-card-image:hover {
+  transform: scale(1.05);
+}
+
+/* ===== PRICE BOX ===== */
+.price-box {
+  background-color: var(--text-primary);
+  box-shadow: 0 0 0 1px var(--border-light);
+  padding: 1rem 1.5rem;
+}
+
+.price-box-large {
+  font-size: 3rem;
+  color: var(--bg-luxury);
+}
+
+.price-box-label {
+  color: var(--bg-luxury);
+  opacity: 0.8;
+}
+
+/* ===== UTILITIES BOX ===== */
+.utilities-box {
+  background-color: var(--bg-luxury-light);
+  border: 1px solid var(--border-light);
+  padding: 1rem 1.5rem;
+}
+
+.utilities-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+}
+
+.utilities-card {
+  background-color: #f5f3ee;
+  border: 1px solid var(--border-color);
+  border-radius: 0;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+/* ===== AVAILABILITY STATUS ===== */
+.availability-available {
+  background-color: var(--success-bg);
+  border: 1px solid rgba(18, 30, 20, 0.1);
+  padding: 0.75rem 1rem;
+}
+
+.availability-available-text {
+  color: var(--success-color);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.availability-unavailable {
+  background-color: var(--danger-bg);
+  border: 1px solid rgba(147, 0, 10, 0.1);
+  padding: 0.75rem 1rem;
+}
+
+.availability-unavailable-text {
+  color: var(--danger-color);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ===== AMENITIES ===== */
+.amenity-badge {
+  background: #fff;
+  color: var(--text-primary);
+  border: 1px solid rgba(23, 24, 23, 0.08);
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.5rem 0.85rem;
+}
+
+.amenity-badge-simple {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-primary);
+  border: 1px solid rgba(23, 24, 23, 0.08);
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+}
+
+/* ===== ICONS ===== */
+.icon-feature {
+  font-size: 3.5rem;
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 1.5rem;
+}
+
+.icon-divider {
+  width: 50px;
+  height: 1px;
+  background-color: rgba(113, 90, 62, 0.3);
+  margin: 0.75rem auto;
+}
+
+.icon-divider-full {
+  width: 100px;
+  height: 1px;
+  background-color: rgba(113, 90, 62, 0.3);
+  margin: 1.5rem auto;
+}
+
+/* ===== FOOTER ===== */
+.luxury-footer {
+  margin-left: 280px;
+  background-color: var(--bg-luxury-light);
+  border-top: 1px solid var(--border-color);
+}
+
+.admin-footer {
+  margin-left: 280px;
+  width: calc(100% - 280px);
+}
+
+/* Admin thumbnail images */
+.admin-room-thumbnail {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Availability badges */
+.badge-available {
+  background-color: #d7e7d5;
+  color: #121e14;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.75rem;
+}
+
+.badge-unavailable {
+  background-color: #ffdad6;
+  color: #93000a;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.75rem;
+}
+
+/* Form select luxury */
+.form-select-luxury {
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+/* Admin form styling */
+.admin-form .form-control,
+.admin-form .form-select {
+  border: 1px solid var(--border-color) !important;
+  border-radius: 0;
+  font-family: 'Manrope', sans-serif;
+  padding: 0.95rem 1rem !important;
+}
+
+.admin-form .form-control:focus,
+.admin-form .form-select:focus {
+  border-color: var(--text-primary) !important;
+  box-shadow: 0 0 0 0.25rem rgba(23, 24, 23, 0.15);
+}
+
+.admin-form .form-label {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.admin-form .form-check-input {
+  border: 1px solid var(--border-color);
+  border-radius: 0;
+}
+
+.admin-form .form-check-input:checked {
+  background-color: var(--text-primary);
+  border-color: var(--text-primary);
+}
+
+/* Btn outline secondary luxury */
+.btn-outline-secondary-luxury {
+  color: var(--text-muted);
+  border-color: var(--border-color);
+  border-radius: 0;
+}
+
+.btn-outline-secondary-luxury:hover {
+  background-color: var(--bg-luxury);
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+}
+
+/* Admin table styles */
+.admin-table-spaced {
+  border-collapse: separate;
+  border-spacing: 0 1rem;
+}
+
+.admin-table-cell {
+  padding: 1.5rem;
+  vertical-align: middle;
+}
+
+/* Icon sizes */
+.icon-sm {
+  font-size: 0.7rem;
+}
+
+/* Price display */
+.price-display {
+  font-size: 1.1rem;
+}
+
+/* Confirmation page styles */
+.confirmation-icon-large {
+  font-size: 4rem;
+}
+
+.heading-confirmation {
+  font-size: 2rem;
+}
+
+.confirmation-total {
+  font-size: 1.2rem;
+}
+
+/* Room detail page styles */
+.room-detail-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(23, 24, 23, 0.06);
+}
+
+.room-detail-image {
+  max-height: 500px;
+  object-fit: cover;
+}
+
+.heading-room-detail {
+  color: var(--text-primary);
+  font-size: 2.5rem;
+}
+
+.star-rating {
+  color: #ffc107;
+}
+
+.rating-text {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.description-text {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* Price box dark variant */
+.price-box-dark {
+  background-color: var(--text-primary);
+  box-shadow: 0 0 0 1px rgba(23, 24, 23, 0.06);
+}
+
+.price-box-label-light {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--bg-luxury);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.price-box-value-large {
+  font-size: 3rem;
+  color: var(--bg-luxury);
+}
+
+.price-box-period {
+  color: var(--bg-luxury);
+  opacity: 0.8;
+}
+
+/* Utilities box */
+.utilities-box {
+  background-color: var(--bg-luxury-light);
+  border: 1px solid rgba(23, 24, 23, 0.06);
+}
+
+.utilities-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+}
+
+.utilities-text {
+  color: var(--text-primary);
+  font-size: 0.85rem;
+}
+
+.badge-utilities {
+  background-color: #fdddb9;
+  color: #786044;
+  font-size: 0.7rem;
+  padding: 0.35rem 0.65rem;
+}
+
+/* Amenities */
+.amenities-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+}
+
+.badge-amenity {
+  background: #fff;
+  color: var(--text-primary);
+  border: 1px solid rgba(23, 24, 23, 0.08);
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.5rem 0.85rem;
+}
+
+.amenity-check {
+  color: #4caf50;
+}
+
+/* Availability styles */
+.availability-available {
+  background-color: #d7e7d5;
+  border: 1px solid rgba(18, 30, 20, 0.1);
+}
+
+.availability-unavailable {
+  background-color: #ffdad6;
+  border: 1px solid rgba(147, 0, 10, 0.1);
+}
+
+.availability-text {
+  color: #121e14;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.availability-text-unavailable {
+  color: #93000a;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Additional utility classes */
+.fs-09 { font-size: 0.9rem; }
+.fs-085 { font-size: 0.85rem; }
+.fs-075 { font-size: 0.75rem; }
+.fs-1-1 { font-size: 1.1rem; }
+.fs-1-5 { font-size: 1.5rem; }
+.fs-2-rem { font-size: 2rem; }
+.fs-3-rem { font-size: 3rem; }
+
+.line-height-16 { line-height: 1.6; }
+
+.d-inline { display: inline; }
+.d-none { display: none; }
+
+.letter-spacing-1 { letter-spacing: 0.1em; }
+
+.float-end { float: right; }
+
+/* Card image height */
+.card-img-height-300 { height: 300px; }
+
+/* Back to top button */
+.btn-back-to-top {
+  display: none;
+  z-index: 999;
+}
+
+/* Price value sizes */
+.price-value-large {
+  font-size: 1.5rem;
+}
+
+/* Font size 1rem */
+.fs-1 { font-size: 1rem; }
+
+/* Admin table cell wide */
+.admin-table-cell-wide {
+  min-width: 250px;
+}
+
+/* Button view small */
+.btn-view-sm {
+  padding: 0.5rem 1rem;
+}
+
+.footer-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.footer-tagline {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.footer-description {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.footer-heading {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin-bottom: 1.25rem;
+}
+
+.footer-link {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-link:hover {
+  color: var(--text-secondary);
+}
+
+.footer-contact {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.footer-contact-icon {
+  color: var(--text-secondary);
+}
+
+.footer-divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 2.5rem 0 1.5rem;
+}
+
+.footer-copyright {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ===== PRICE PREVIEW ===== */
+.price-preview {
+  background-color: #f5f3ee;
+  border: 1px solid var(--border-color);
+  border-radius: 0;
+  padding: 1.5rem;
+  color: var(--text-primary);
+}
+
+.price-preview-total {
+  display: block;
+  font-size: 1.1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color);
+  margin-top: 1rem;
+  color: var(--text-primary);
+}
+
+.room-summary-image {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 0;
+  flex-shrink: 0;
+  margin-right: 1.5rem;
+}
+
+.room-info-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.room-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.room-info-content h5 {
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.room-info-badge {
+  display: inline-block;
+  width: fit-content;
+  margin-bottom: 0.5rem;
+}
+
+.room-info-price {
+  font-size: 0.95rem;
+  margin-top: 0.75rem;
+}
+
+/* Booking Form Utilities Section Spacing */
+.utilities-section h6 {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.utilities-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.utilities-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.utilities-label {
+  font-weight: 700;
+  min-width: 100px;
+  color: var(--text-primary);
+}
+
+.utilities-badge {
+  display: inline-block;
+}
+
+.utilities-note {
+  margin-top: 0.75rem;
+  padding-top: 0;
+  border-top: none;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ===== CONFIRMATION PAGE ===== */
+.confirmation-success-icon {
+  width: 80px;
+  height: 80px;
+  background-color: var(--success-bg);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirmation-success-icon i {
+  font-size: 2.5rem;
+  color: var(--success-color);
+}
+
+.confirmation-heading {
+  font-size: 2.5rem;
+  color: var(--text-primary);
+}
+
+.confirmation-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.confirmation-table tr {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.confirmation-table th {
+  background-color: transparent;
+  color: var(--text-primary);
+  font-weight: 700;
+  padding: 1rem;
+  text-align: left;
+  width: 30%;
+}
+
+.confirmation-table td {
+  padding: 1rem;
+  color: var(--text-primary);
+}
+
+.confirmation-table code {
+  background-color: #f5f3ee;
+  color: var(--text-secondary);
+  padding: 0.25rem 0.5rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+}
+
+/* ===== 404 PAGE ===== */
+.page-404-icon {
+  font-size: 5rem;
+  color: var(--warning-bg);
+}
+
+.page-404-heading {
+  font-size: 6rem;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.page-404-subheading {
+  color: var(--text-primary);
+  font-size: 1.75rem;
+}
+
+.page-404-description {
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+/* ===== FILTER CARD ===== */
+.filter-card {
+  border: 1px solid rgba(23, 24, 23, 0.08);
+  border-radius: 0;
+}
+
+.filter-section {
+  border-color: rgba(23, 24, 23, 0.08);
+  min-width: 250px;
+}
+
+.filter-icon {
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+}
+
+/* ===== ALERT ===== */
+.alert-no-results {
+  background-color: var(--warning-bg);
+  border: none;
+  color: var(--warning-color);
+}
+
+/* ===== ADMIN SPECIFIC ===== */
+nav.navbar { display: none !important; }
+footer.bg-dark { display: none !important; }
+
+.admin-panel-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+}
+
+/* Edit/Delete buttons */
+.btn-edit {
+  background-color: var(--bg-luxury);
+  color: var(--text-secondary);
+  border: 1px solid #e0dbd6;
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.btn-delete {
+  background-color: var(--danger-bg);
+  color: var(--danger-color);
+  border: 1px solid #f1a199;
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+}
+
 /* ===== CUSTOM SCROLLBAR ===== */
 ::-webkit-scrollbar {
   width: 8px;
@@ -260,5 +1327,13 @@ body {
   
   .stat-value {
     font-size: 3rem;
+  }
+  
+  .stat-value-medium {
+    font-size: 3rem;
+  }
+  
+  .heading-hero {
+    font-size: 2.5rem;
   }
 }

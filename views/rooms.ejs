@@ -1,67 +1,34 @@
 <%- include('partials/header') %>
 
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap');
-  
-  :root {
-    --bg-luxury: #fcf9f4;
-    --text-primary: #171817;
-    --text-secondary: #715a3e;
-    --text-muted: #8c8c88;
-    --border-color: rgba(23, 24, 23, 0.1);
-  }
-  
-  .luxury-main {
-    margin-left: 280px;
-    min-height: 100vh;
-    background-color: var(--bg-luxury);
-  }
-  
-  .font-serif { font-family: 'Noto Serif', serif; }
-  .font-sans { font-family: 'Manrope', sans-serif; }
-  
-  .luxury-card {
-    background: #fff;
-    box-shadow: 0 0 0 1px rgba(23, 24, 23, 0.06);
-    transition: all 0.3s ease;
-  }
-  
-  .luxury-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 24px rgba(113, 90, 62, 0.12) !important;
-  }
-</style>
-
 <main class="luxury-main">
   <div class="container-fluid py-5 px-4 px-xl-5">
     <!-- Header Section -->
     <header class="mb-5">
-      <span class="text-uppercase font-sans fw-bold" style="color: #715a3e; letter-spacing: 0.2em; font-size: 0.65rem;">Discover Your Stay</span>
-      <h1 class="font-serif" style="font-size: 3rem; font-weight: bold; color: #171817; margin-top: 0.75rem;">Browse Accommodations</h1>
+      <span class="text-uppercase font-sans fw-bold subheading">Discover Your Stay</span>
+      <h1 class="font-serif heading-page">Browse Accommodations</h1>
     </header>
 
     <!-- Filter & Search Bar -->
     <section class="mb-5">
-      <div class="card shadow-sm" style="border: 1px solid rgba(23, 24, 23, 0.08); border-radius: 0;">
+      <div class="card shadow-sm filter-card">
         <div class="card-body p-0">
           <form action="/rooms" method="GET" class="d-flex flex-wrap align-items-center">
             <!-- Search Input -->
-            <div class="flex-grow-1 px-4 py-3 d-flex align-items-center border-end" style="border-color: rgba(23, 24, 23, 0.08); min-width: 250px;">
-              <i class="bi bi-search font-sans" style="color: #715a3e; font-size: 1.2rem;"></i>
+            <div class="flex-grow-1 px-4 py-3 d-flex align-items-center border-end filter-section">
+              <i class="bi bi-search font-sans filter-icon"></i>
               <input 
                 type="text" 
                 name="search"
                 placeholder="Search by room name or description..." 
                 value="<%= query.search || '' %>"
                 class="form-control border-0 ms-3 ps-0 font-sans"
-                style="background: transparent; font-size: 0.95rem; color: #171817;"
               />
             </div>
 
             <!-- Room Type Dropdown -->
-            <div class="px-4 py-3 border-end d-flex align-items-center" style="border-color: rgba(23, 24, 23, 0.08); min-width: 210px;">
-              <label class="me-3 text-uppercase font-sans fw-bold" style="color: #171817; letter-spacing: 0.05em; font-size: 0.75rem;">Room Type</label>
-              <select name="type" class="form-select form-select-sm border-0 font-sans" style="background: transparent; min-width: 140px; color: #171817;">
+            <div class="px-4 py-3 border-end d-flex align-items-center filter-section">
+              <label class="me-3 text-uppercase font-sans fw-bold filter-label">Room Type</label>
+              <select name="type" class="form-select form-select-sm border-0 font-sans">
                 <option value="" <%= !query.type ? 'selected' : '' %>>All</option>
                 <option value="Single" <%= query.type === 'Single' ? 'selected' : '' %>>Single</option>
                 <option value="Double" <%= query.type === 'Double' ? 'selected' : '' %>>Double</option>
@@ -71,8 +38,8 @@
             </div>
 
             <!-- Price Range -->
-            <div class="px-4 py-3 border-end d-flex align-items-center" style="border-color: rgba(23, 24, 23, 0.08); min-width: 220px;">
-              <label class="me-3 text-uppercase font-sans fw-bold" style="color: #171817; letter-spacing: 0.05em; font-size: 0.75rem;">Max Price</label>
+            <div class="px-4 py-3 border-end d-flex align-items-center filter-section">
+              <label class="me-3 text-uppercase font-sans fw-bold filter-label">Max Price</label>
               <input 
                 type="number" 
                 name="maxPrice" 
@@ -80,12 +47,11 @@
                 placeholder="₹ Max" 
                 value="<%= query.maxPrice || '' %>"
                 class="form-control form-control-sm border-0 font-sans"
-                style="background: transparent; min-width: 110px; color: #171817;"
               />
             </div>
 
             <!-- Apply Filters Button -->
-            <button type="submit" class="btn px-5 py-3 m-0 font-sans" style="background-color: #171817; color: #fff; border-radius: 0; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.75rem;">
+            <button type="submit" class="btn btn-luxury-primary px-5 py-3 m-0 font-sans">
               Apply Filters
             </button>
           </form>
@@ -95,9 +61,9 @@
 
     <!-- Room Cards Grid -->
     <% if (rooms.length === 0) { %>
-      <div class="alert alert-warning text-center py-5" style="background-color: #fdddb9; border: none; color: #786044;">
-        <i class="bi bi-exclamation-triangle" style="font-size: 2rem;"></i>
-        <p class="mt-3 mb-0 font-sans" style="font-size: 1.1rem;">No rooms found matching your criteria. Try adjusting your filters.</p>
+      <div class="alert text-center py-5 alert-no-results">
+        <i class="bi bi-exclamation-triangle fs-2-rem"></i>
+        <p class="mt-3 mb-0 font-sans fs-1-1">No rooms found matching your criteria. Try adjusting your filters.</p>
       </div>
     <% } else { %>
     <section class="room-cards-grid">
@@ -105,55 +71,54 @@
         <% rooms.forEach(room => { %>
         <!-- Room Card -->
         <div class="col-md-6 col-lg-4">
-          <div class="luxury-card h-100" style="border-radius: 0; overflow: hidden;">
+          <div class="luxury-card h-100">
             
             <!-- Image Container with Badges -->
-            <div class="position-relative overflow-hidden" style="height: 300px;">
-              <img src="<%= room.image %>" class="w-100 h-100" style="object-fit: cover; transition: transform 0.7s ease;"
-                   onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+            <div class="position-relative overflow-hidden card-img-height-300">
+              <img src="<%= room.image %>" class="w-100 h-100 rooms-list-card-image" alt="<%= room.name %>"/>
               
               <!-- Room Type Badge (Top-Left) -->
-              <span class="position-absolute top-0 start-0 m-3 px-3 py-2 fw-bold text-uppercase font-sans" style="background: rgba(255, 255, 255, 0.95); color: #171817; font-size: 0.55rem; letter-spacing: 0.1em; border-radius: 0;">
+              <span class="position-absolute top-0 start-0 m-3 px-3 py-2 fw-bold text-uppercase font-sans room-card-badge-type">
                 <%= room.type === 'Single' ? 'Single' : room.type === 'Double' ? 'Double' : room.type === 'Suite' ? 'Family' : 'Shared' %>
               </span>
 
               <!-- Price Badge (Top-Right) -->
-              <span class="position-absolute top-0 end-0 m-3 px-3 py-2 fw-bold text-white text-uppercase font-serif" style="background: rgba(23, 24, 23, 0.85); font-size: 1rem; border-radius: 0;">
-                ₹<%= room.monthlyPrice %><span style="font-size: 0.7rem; opacity: 0.9;">/month</span>
+              <span class="position-absolute top-0 end-0 m-3 px-3 py-2 fw-bold text-white text-uppercase font-serif room-card-badge-price">
+                ₹<%= room.monthlyPrice %><span class="price-suffix">/month</span>
               </span>
             </div>
 
             <!-- Card Body -->
-            <div class="card-body d-flex flex-column" style="padding: 1.75rem;">
-              <h5 class="card-title fw-bold mb-2 font-serif" style="color: #171817; font-size: 1.25rem;">
+            <div class="card-body d-flex flex-column room-card-body">
+              <h5 class="card-title fw-bold mb-2 font-serif room-card-title">
                 <%= room.name %>
               </h5>
 
               <!-- Location -->
-              <p class="text-secondary small mb-3 d-flex align-items-center font-sans" style="color: #715a3e;">
+              <p class="text-secondary small mb-3 d-flex align-items-center font-sans text-secondary-luxury">
                 <i class="bi bi-geo-alt-fill me-2"></i> Heritage Block, Sector 4
               </p>
 
               <!-- Description -->
-              <p class="text-muted small mb-3 font-sans" style="color: #8c8c88;">
+              <p class="text-muted small mb-3 font-sans text-muted-luxury">
                 <%= room.description.substring(0, 100) %>...
               </p>
 
               <!-- Amenities -->
               <div class="d-flex flex-wrap gap-2 mb-4">
                 <% room.amenities.slice(0, 3).forEach(amenity => { %>
-                  <span class="badge rounded-pill font-sans" style="background: rgba(255, 255, 255, 0.9); color: #171817; border: 1px solid rgba(23, 24, 23, 0.08); font-size: 0.65rem; font-weight: 500; padding: 0.5rem 0.75rem;">
+                  <span class="badge rounded-pill font-sans amenity-badge-simple">
                     <%= amenity %>
                   </span>
                 <% }) %>
               </div>
 
               <!-- Footer with Rating & CTA -->
-              <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top" style="border-color: rgba(23, 24, 23, 0.08);">
-                <span class="small font-sans" style="color: #8c8c88; font-size: 0.75rem;">
+              <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top room-card-footer">
+                <span class="small font-sans text-small-muted">
                   <i class="bi bi-star-fill text-warning"></i> <%= room.rating %> rating
                 </span>
-                <a href="/rooms/<%= room._id %>" class="btn btn-outline-dark btn-sm px-4 fw-semibold font-sans" style="font-size: 0.7rem; border-radius: 0; text-transform: uppercase; letter-spacing: 0.05em; border-color: #171817; color: #171817;">
+                <a href="/rooms/<%= room._id %>" class="btn btn-outline-dark btn-sm px-4 fw-semibold font-sans btn-luxury-outline">
                   View
                 </a>
               </div>
@@ -167,8 +132,8 @@
 
     <!-- Load More Section -->
     <div class="text-center py-5 mt-5">
-      <div class="mb-4" style="height: 1px; width: 50px; background: rgba(23, 24, 23, 0.15); margin: 0 auto;"></div>
-      <button class="btn btn-link text-decoration-none font-sans" style="color: #171817; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.75rem;">
+      <div class="mb-4 icon-divider"></div>
+      <button class="btn btn-link text-decoration-none font-sans text-primary-luxury fw-bold text-uppercase letter-spacing-1 fs-075">
         <i class="bi bi-arrow-down"></i> Load More Collections
       </button>
     </div>
