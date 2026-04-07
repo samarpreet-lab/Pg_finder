@@ -4,36 +4,36 @@ const Room = require('../models/Room');
 const Booking = require('../models/Booking');
 
 // Admin Dashboard
-router.get('/', function(req, res) {
-  let rooms = Room.getAllRooms();
-  let bookings = Booking.getAllBookings();
-  let recentBookings = Booking.getRecentBookings(5);
-  let revenue = Booking.calculateRevenue();
+router.get('/', (req, res) => {
+  const rooms = Room.getAllRooms();
+  const bookings = Booking.getAllBookings();
+  const recentBookings = Booking.getRecentBookings(5);
+  const revenue = Booking.calculateRevenue();
 
   res.render('admin/dashboard', {
     title: 'Admin Dashboard',
     totalRooms: rooms.length,
     totalBookings: bookings.length,
-    revenue: revenue,
-    recentBookings: recentBookings,
+    revenue,
+    recentBookings,
     footerClass: 'admin-footer',
     isAdmin: true
   });
 });
 
 // All Rooms
-router.get('/rooms', function(req, res) {
-  let rooms = Room.getAllRooms();
+router.get('/rooms', (req, res) => {
+  const rooms = Room.getAllRooms();
   res.render('admin/rooms', { 
     title: 'Manage Rooms', 
-    rooms: rooms, 
+    rooms, 
     footerClass: 'admin-footer', 
     isAdmin: true 
   });
 });
 
 // Add Room Form
-router.get('/rooms/new', function(req, res) {
+router.get('/rooms/new', (req, res) => {
   res.render('admin/addRoom', { 
     title: 'Add New Room', 
     room: null, 
@@ -43,27 +43,29 @@ router.get('/rooms/new', function(req, res) {
 });
 
 // Save New Room
-router.post('/rooms', function(req, res) {
-  let name = req.body.name;
-  let type = req.body.type;
-  let monthlyPrice = req.body.monthlyPrice;
-  let description = req.body.description;
-  let image = req.body.image || 'https://via.placeholder.com/400x250?text=Room+Image';
-  let amenities = req.body.amenities;
-  let rating = req.body.rating || 4.0;
-  let electricityStatus = req.body.electricityStatus || 'separate';
-  let waterStatus = req.body.waterStatus || 'included';
+router.post('/rooms', (req, res) => {
+  const {
+    name, 
+    type, 
+    monthlyPrice, 
+    description, 
+    image = 'https://via.placeholder.com/400x250?text=Room+Image',
+    rating = 4.0,
+    electricityStatus = 'separate',
+    waterStatus = 'included'
+  } = req.body;
   
+  let amenities = req.body.amenities;
   if (!amenities) {
     amenities = ['WiFi'];
   } else if (!Array.isArray(amenities)) {
     amenities = [amenities];
   }
   
-  let utilities = {
+  const utilities = {
     electricity: electricityStatus,
     water: waterStatus,
-    description: 'Electricity ' + electricityStatus + ', Water ' + waterStatus
+    description: `Electricity ${electricityStatus}, Water ${waterStatus}`
   };
   
   Room.addRoom(name, type, monthlyPrice, description, image, amenities, utilities, rating);
@@ -71,39 +73,42 @@ router.post('/rooms', function(req, res) {
 });
 
 // Edit Room Form
-router.get('/rooms/:id/edit', function(req, res) {
-  let room = Room.getRoomById(req.params.id);
+router.get('/rooms/:id/edit', (req, res) => {
+  const room = Room.getRoomById(req.params.id);
   res.render('admin/addRoom', { 
     title: 'Edit Room', 
-    room: room, 
+    room, 
     footerClass: 'admin-footer', 
     isAdmin: true 
   });
 });
 
 // Update Room
-router.put('/rooms/:id', function(req, res) {
-  let name = req.body.name;
-  let type = req.body.type;
-  let monthlyPrice = req.body.monthlyPrice;
-  let description = req.body.description;
-  let image = req.body.image;
-  let amenities = req.body.amenities;
-  let rating = req.body.rating;
-  let isAvailable = req.body.isAvailable === 'on';
-  let electricityStatus = req.body.electricityStatus || 'separate';
-  let waterStatus = req.body.waterStatus || 'included';
+router.post('/rooms/:id/update', (req, res) => {
+  const {
+    name,
+    type,
+    monthlyPrice,
+    description,
+    image,
+    rating,
+    electricityStatus = 'separate',
+    waterStatus = 'included'
+  } = req.body;
   
+  const isAvailable = req.body.isAvailable === 'on';
+  
+  let amenities = req.body.amenities;
   if (!amenities) {
     amenities = ['WiFi'];
   } else if (!Array.isArray(amenities)) {
     amenities = [amenities];
   }
   
-  let utilities = {
+  const utilities = {
     electricity: electricityStatus,
     water: waterStatus,
-    description: 'Electricity ' + electricityStatus + ', Water ' + waterStatus
+    description: `Electricity ${electricityStatus}, Water ${waterStatus}`
   };
   
   Room.updateRoom(req.params.id, name, type, monthlyPrice, description, image, amenities, isAvailable, utilities, rating);
@@ -111,46 +116,32 @@ router.put('/rooms/:id', function(req, res) {
 });
 
 // Delete Room
-router.delete('/rooms/:id', function(req, res) {
+router.post('/rooms/:id/delete', (req, res) => {
   Room.deleteRoom(req.params.id);
   res.redirect('/admin/rooms');
 });
 
 // All Bookings
-router.get('/bookings', function(req, res) {
-  let data = Booking.loadData();
-  let recentBookings = Booking.getRecentBookings(100);
-  let bookingsWithRooms = [];
+router.get('/bookings', (req, res) => {
+  const data = Booking.loadData();
+  const recentBookings = Booking.getRecentBookings(100);
   
-  for (let i = 0; i < recentBookings.length; i++) {
-    let booking = recentBookings[i];
-    let room = null;
-    
-    for (let j = 0; j < data.rooms.length; j++) {
-      if (data.rooms[j]._id === booking.room) {
-        room = data.rooms[j];
-        break;
-      }
-    }
-    
-    let bookingData = {
-      _id: booking._id,
-      guestName: booking.guestName,
-      email: booking.email,
-      phone: booking.phone,
-      room: room,
-      checkIn: booking.checkIn,
-      checkOut: booking.checkOut,
-      guests: booking.guests,
-      months: booking.months,
-      monthlyRate: booking.monthlyRate,
-      totalPrice: booking.totalPrice,
-      utilities: booking.utilities,
-      status: booking.status,
-      createdAt: booking.createdAt
-    };
-    bookingsWithRooms.push(bookingData);
-  }
+  const bookingsWithRooms = recentBookings.map(booking => ({
+    _id: booking._id,
+    guestName: booking.guestName,
+    email: booking.email,
+    phone: booking.phone,
+    room: data.rooms.find(r => r._id === booking.room),
+    checkIn: booking.checkIn,
+    checkOut: booking.checkOut,
+    guests: booking.guests,
+    months: booking.months,
+    monthlyRate: booking.monthlyRate,
+    totalPrice: booking.totalPrice,
+    utilities: booking.utilities,
+    status: booking.status,
+    createdAt: booking.createdAt
+  }));
   
   res.render('admin/bookings', { 
     title: 'Manage Bookings', 
@@ -161,8 +152,8 @@ router.get('/bookings', function(req, res) {
 });
 
 // Update Booking Status
-router.put('/bookings/:id', function(req, res) {
-  let status = req.body.status;
+router.post('/bookings/:id/update', (req, res) => {
+  const { status } = req.body;
   Booking.updateBookingStatus(req.params.id, status);
   res.redirect('/admin/bookings');
 });

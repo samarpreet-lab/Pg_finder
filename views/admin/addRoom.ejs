@@ -137,7 +137,7 @@ body {
     <div class="row justify-content-center">
       <div class="col-lg-8">
         <div class="bg-white border border-dark border-opacity-10 p-4 p-xl-5">
-          <form action="<%= room ? '/admin/rooms/' + room._id + '?_method=PUT' : '/admin/rooms' %>" method="POST">
+          <form action="<%= room ? '/admin/rooms/' + room._id + '/update' : '/admin/rooms' %>" method="POST">
 
             <div class="mb-4">
               <label class="form-label">PG Name</label>

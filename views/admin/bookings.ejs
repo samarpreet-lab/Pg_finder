@@ -173,7 +173,7 @@ body {
               <small class="text-muted-luxury">@ ₹<%= b.monthlyRate %>/month</small>
             </td>
             <td style="padding: 1.5rem; vertical-align: middle; text-align: right;">
-              <form action="/admin/bookings/<%= b._id %>?_method=PUT" method="POST" class="d-inline">
+              <form action="/admin/bookings/<%= b._id %>/update" method="POST" class="d-inline">
                 <select name="status" class="form-select form-select-sm" style="width: auto; display: inline-block; border: 1px solid #e0dbd6; border-radius: 4px; font-size: 0.85rem;"
                         onchange="this.form.submit()">
                   <option value="Pending" <%= b.status === 'Pending' ? 'selected' : '' %>>Pending</option>

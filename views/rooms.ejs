@@ -50,22 +50,38 @@
               <i class="bi bi-search font-sans" style="color: #715a3e; font-size: 1.2rem;"></i>
               <input 
                 type="text" 
-                placeholder="Search by location or PG name..." 
+                name="search"
+                placeholder="Search by room name or description..." 
+                value="<%= query.search || '' %>"
                 class="form-control border-0 ms-3 ps-0 font-sans"
                 style="background: transparent; font-size: 0.95rem; color: #171817;"
               />
             </div>
 
             <!-- Room Type Dropdown -->
-            <div class="px-4 py-3 border-end d-flex align-items-center" style="border-color: rgba(23, 24, 23, 0.08); cursor: pointer;">
-              <span class="text-uppercase font-sans fw-bold" style="color: #171817; letter-spacing: 0.05em; font-size: 0.75rem;">Room Type</span>
-              <i class="bi bi-chevron-down ms-2" style="color: #8c8c88;"></i>
+            <div class="px-4 py-3 border-end d-flex align-items-center" style="border-color: rgba(23, 24, 23, 0.08); min-width: 210px;">
+              <label class="me-3 text-uppercase font-sans fw-bold" style="color: #171817; letter-spacing: 0.05em; font-size: 0.75rem;">Room Type</label>
+              <select name="type" class="form-select form-select-sm border-0 font-sans" style="background: transparent; min-width: 140px; color: #171817;">
+                <option value="" <%= !query.type ? 'selected' : '' %>>All</option>
+                <option value="Single" <%= query.type === 'Single' ? 'selected' : '' %>>Single</option>
+                <option value="Double" <%= query.type === 'Double' ? 'selected' : '' %>>Double</option>
+                <option value="Suite" <%= query.type === 'Suite' ? 'selected' : '' %>>Suite</option>
+                <option value="Deluxe" <%= query.type === 'Deluxe' ? 'selected' : '' %>>Deluxe</option>
+              </select>
             </div>
 
             <!-- Price Range -->
-            <div class="px-4 py-3 border-end d-flex align-items-center" style="border-color: rgba(23, 24, 23, 0.08); cursor: pointer;">
-              <span class="text-uppercase font-sans fw-bold" style="color: #171817; letter-spacing: 0.05em; font-size: 0.75rem;">Price Range</span>
-              <i class="bi bi-sliders ms-2" style="color: #8c8c88;"></i>
+            <div class="px-4 py-3 border-end d-flex align-items-center" style="border-color: rgba(23, 24, 23, 0.08); min-width: 220px;">
+              <label class="me-3 text-uppercase font-sans fw-bold" style="color: #171817; letter-spacing: 0.05em; font-size: 0.75rem;">Max Price</label>
+              <input 
+                type="number" 
+                name="maxPrice" 
+                min="0" 
+                placeholder="₹ Max" 
+                value="<%= query.maxPrice || '' %>"
+                class="form-control form-control-sm border-0 font-sans"
+                style="background: transparent; min-width: 110px; color: #171817;"
+              />
             </div>
 
             <!-- Apply Filters Button -->

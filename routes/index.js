@@ -4,91 +4,75 @@ const Room = require('../models/Room');
 const Booking = require('../models/Booking');
 
 // Home Page
-router.get('/', function(req, res) {
-  let rooms = Room.getAvailableRooms();
-  let featuredRooms = [];
-  for (let i = 0; i < 3 && i < rooms.length; i++) {
-    featuredRooms.push(rooms[i]);
-  }
+router.get('/', (req, res) => {
+  const rooms = Room.getAvailableRooms();
+  const featuredRooms = rooms.slice(0, 3);
   res.render('index', { title: 'StayEase - Find Your Perfect Stay', rooms: featuredRooms });
 });
 
 // All Rooms Page
-router.get('/rooms', function(req, res) {
-  let type = req.query.type;
-  let maxPrice = req.query.maxPrice;
-  let rooms = Room.getAvailableRooms();
-  let filteredRooms = [];
+router.get('/rooms', (req, res) => {
+  const { type = '', search: searchQuery = '' } = req.query;
+  const maxPrice = req.query.maxPrice ? parseInt(req.query.maxPrice, 10) : NaN;
+  const search = searchQuery.toLowerCase().trim();
   
-  for (let i = 0; i < rooms.length; i++) {
-    let include = true;
-    
-    if (type && rooms[i].type !== type) {
-      include = false;
-    }
-    if (maxPrice && rooms[i].price > parseInt(maxPrice)) {
-      include = false;
-    }
-    
-    if (include) {
-      filteredRooms.push(rooms[i]);
-    }
-  }
+  const rooms = Room.getAvailableRooms();
+  
+  const filteredRooms = rooms.filter(room => {
+    const typeMatch = !type || room.type === type;
+    const priceMatch = isNaN(maxPrice) || room.monthlyPrice <= maxPrice;
+    const searchMatch = !search || room.name.toLowerCase().includes(search) || room.description.toLowerCase().includes(search);
+    return typeMatch && priceMatch && searchMatch;
+  });
 
   res.render('rooms', { title: 'Browse Rooms', rooms: filteredRooms, query: req.query });
 });
 
 // Room Detail Page
-router.get('/rooms/:id', function(req, res) {
-  let room = Room.getRoomById(req.params.id);
+router.get('/rooms/:id', (req, res) => {
+  const room = Room.getRoomById(req.params.id);
   if (!room) {
     return res.redirect('/rooms');
   }
-  res.render('roomDetail', { title: room.name, room: room });
+  res.render('roomDetail', { title: room.name, room });
 });
 
 // Booking Form Page
-router.get('/book/:id', function(req, res) {
-  let room = Room.getRoomById(req.params.id);
+router.get('/book/:id', (req, res) => {
+  const room = Room.getRoomById(req.params.id);
   if (!room) {
     return res.redirect('/rooms');
   }
-  res.render('bookingForm', { title: 'Book Room', room: room });
+  res.render('bookingForm', { title: 'Book Room', room });
 });
 
 // Submit Booking
-router.post('/book/:id', function(req, res) {
-  let guestName = req.body.guestName;
-  let email = req.body.email;
-  let phone = req.body.phone;
-  let checkIn = req.body.checkIn;
-  let checkOut = req.body.checkOut;
-  let guests = req.body.guests;
-  let months = req.body.months || 1;
+router.post('/book/:id', (req, res) => {
+  const { guestName, email, phone, checkIn, checkOut, guests, months = 1 } = req.body;
   
-  let booking = Booking.createBooking(guestName, email, phone, req.params.id, checkIn, checkOut, guests, months);
+  const booking = Booking.createBooking(guestName, email, phone, req.params.id, checkIn, checkOut, guests, months);
   
   if (!booking) {
     return res.redirect('/rooms');
   }
   
-  res.redirect('/confirmation/' + booking._id);
+  res.redirect(`/confirmation/${booking._id}`);
 });
 
 // Confirmation Page
-router.get('/confirmation/:id', function(req, res) {
-  let booking = Booking.getBookingById(req.params.id);
+router.get('/confirmation/:id', (req, res) => {
+  const booking = Booking.getBookingById(req.params.id);
   if (!booking) {
     return res.redirect('/rooms');
   }
   
-  let room = Room.getRoomById(booking.room);
-  let bookingWithRoom = {
+  const room = Room.getRoomById(booking.room);
+  const bookingWithRoom = {
     _id: booking._id,
     guestName: booking.guestName,
     email: booking.email,
     phone: booking.phone,
-    room: room,
+    room,
     checkIn: booking.checkIn,
     checkOut: booking.checkOut,
     guests: booking.guests,
@@ -104,30 +88,25 @@ router.get('/confirmation/:id', function(req, res) {
 });
 
 // My Bookings Page
-router.get('/bookings', function(req, res) {
-  let bookings = Booking.getAllBookings();
-  let bookingsWithRooms = [];
+router.get('/bookings', (req, res) => {
+  const bookings = Booking.getAllBookings();
   
-  for (let i = 0; i < bookings.length; i++) {
-    let room = Room.getRoomById(bookings[i].room);
-    let bookingData = {
-      _id: bookings[i]._id,
-      guestName: bookings[i].guestName,
-      email: bookings[i].email,
-      phone: bookings[i].phone,
-      room: room,
-      checkIn: bookings[i].checkIn,
-      checkOut: bookings[i].checkOut,
-      guests: bookings[i].guests,
-      months: bookings[i].months,
-      monthlyRate: bookings[i].monthlyRate,
-      totalPrice: bookings[i].totalPrice,
-      utilities: bookings[i].utilities,
-      status: bookings[i].status,
-      createdAt: bookings[i].createdAt
-    };
-    bookingsWithRooms.push(bookingData);
-  }
+  const bookingsWithRooms = bookings.map(booking => ({
+    _id: booking._id,
+    guestName: booking.guestName,
+    email: booking.email,
+    phone: booking.phone,
+    room: Room.getRoomById(booking.room),
+    checkIn: booking.checkIn,
+    checkOut: booking.checkOut,
+    guests: booking.guests,
+    months: booking.months,
+    monthlyRate: booking.monthlyRate,
+    totalPrice: booking.totalPrice,
+    utilities: booking.utilities,
+    status: booking.status,
+    createdAt: booking.createdAt
+  }));
   
   res.render('bookings', { title: 'My Bookings', bookings: bookingsWithRooms });
 });
