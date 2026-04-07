@@ -3,7 +3,12 @@ const router = express.Router();
 const Room = require('../models/Room');
 const Booking = require('../models/Booking');
 
+// This router handles all admin-side pages and actions.
+// It uses the Room and Booking model helpers to manage data,
+// then renders admin-specific views with the required information.
+
 // Admin Dashboard
+// Loads summary numbers and recent booking entries so the admin can see platform status.
 router.get('/', (req, res) => {
   const rooms = Room.getAllRooms();
   const bookings = Booking.getAllBookings();
@@ -22,6 +27,7 @@ router.get('/', (req, res) => {
 });
 
 // All Rooms
+// Displays the room inventory page where the admin can view all rooms.
 router.get('/rooms', (req, res) => {
   const rooms = Room.getAllRooms();
   res.render('admin/rooms', { 
@@ -33,6 +39,7 @@ router.get('/rooms', (req, res) => {
 });
 
 // Add Room Form
+// Shows an empty form page to create a new room entry.
 router.get('/rooms/new', (req, res) => {
   res.render('admin/addRoom', { 
     title: 'Add New Room', 
@@ -43,6 +50,7 @@ router.get('/rooms/new', (req, res) => {
 });
 
 // Save New Room
+// Processes the new room form submission and saves the room data.
 router.post('/rooms', (req, res) => {
   const {
     name, 
@@ -73,6 +81,7 @@ router.post('/rooms', (req, res) => {
 });
 
 // Edit Room Form
+// Loads an existing room and renders the same add/edit form with values filled in.
 router.get('/rooms/:id/edit', (req, res) => {
   const room = Room.getRoomById(req.params.id);
   res.render('admin/addRoom', { 
@@ -84,6 +93,7 @@ router.get('/rooms/:id/edit', (req, res) => {
 });
 
 // Update Room
+// Handles the edit form submission and updates the selected room details.
 router.post('/rooms/:id/update', (req, res) => {
   const {
     name,
@@ -116,12 +126,14 @@ router.post('/rooms/:id/update', (req, res) => {
 });
 
 // Delete Room
+// Receives a delete request and removes the room from the data store.
 router.post('/rooms/:id/delete', (req, res) => {
   Room.deleteRoom(req.params.id);
   res.redirect('/admin/rooms');
 });
 
 // All Bookings
+// Shows all bookings with room details so the admin can review reservations.
 router.get('/bookings', (req, res) => {
   const data = Booking.loadData();
   const recentBookings = Booking.getRecentBookings(100);
@@ -152,6 +164,7 @@ router.get('/bookings', (req, res) => {
 });
 
 // Update Booking Status
+// Updates the status of a selected booking (Pending, Confirmed, Cancelled).
 router.post('/bookings/:id/update', (req, res) => {
   const { status } = req.body;
   Booking.updateBookingStatus(req.params.id, status);

@@ -3,7 +3,11 @@ const router = express.Router();
 const Room = require('../models/Room');
 const Booking = require('../models/Booking');
 
+// This file defines the public-facing routes for guests.
+// Each route loads data from models, then renders an EJS view.
+
 // Home Page
+// Loads available rooms and renders the landing page with featured listings.
 router.get('/', (req, res) => {
   const rooms = Room.getAvailableRooms();
   const featuredRooms = rooms.slice(0, 3);
@@ -11,6 +15,7 @@ router.get('/', (req, res) => {
 });
 
 // All Rooms Page
+// Displays the room catalog, optionally filtering by type, price, and search text.
 router.get('/rooms', (req, res) => {
   const { type = '', search: searchQuery = '' } = req.query;
   const maxPrice = req.query.maxPrice ? parseInt(req.query.maxPrice, 10) : NaN;
@@ -29,6 +34,7 @@ router.get('/rooms', (req, res) => {
 });
 
 // Room Detail Page
+// Shows the full room detail page for a single room.
 router.get('/rooms/:id', (req, res) => {
   const room = Room.getRoomById(req.params.id);
   if (!room) {
@@ -38,6 +44,7 @@ router.get('/rooms/:id', (req, res) => {
 });
 
 // Booking Form Page
+// Displays the booking form for a selected room.
 router.get('/book/:id', (req, res) => {
   const room = Room.getRoomById(req.params.id);
   if (!room) {
@@ -47,6 +54,7 @@ router.get('/book/:id', (req, res) => {
 });
 
 // Submit Booking
+// Processes the booking form and creates a new booking record.
 router.post('/book/:id', (req, res) => {
   const { guestName, email, phone, checkIn, checkOut, guests, months = 1 } = req.body;
   
@@ -60,6 +68,7 @@ router.post('/book/:id', (req, res) => {
 });
 
 // Confirmation Page
+// Shows a confirmation message and booking details after a successful reservation.
 router.get('/confirmation/:id', (req, res) => {
   const booking = Booking.getBookingById(req.params.id);
   if (!booking) {
@@ -88,6 +97,7 @@ router.get('/confirmation/:id', (req, res) => {
 });
 
 // My Bookings Page
+// Displays all bookings and attaches room details to each booking record.
 router.get('/bookings', (req, res) => {
   const bookings = Booking.getAllBookings();
   

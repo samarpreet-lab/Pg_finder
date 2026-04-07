@@ -1,6 +1,7 @@
 // StayEase - Main JavaScript File
+// This file manages client-side form helpers, navigation state, and UI behavior.
 
-// Set minimum date for date inputs to today
+// Set minimum date for check-in and check-out fields to today's date.
 document.addEventListener('DOMContentLoaded', function() {
   const today = new Date().toISOString().split('T')[0];
   const checkInInputs = document.querySelectorAll('input[name="checkIn"]');
@@ -14,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     input.setAttribute('min', today);
   });
   
-  // Update checkout min date when checkin changes
+  // When the check-in date changes, ensure check-out cannot be earlier than the check-in date.
   checkInInputs.forEach(input => {
     input.addEventListener('change', function() {
       const checkOutInput = this.closest('form').querySelector('input[name="checkOut"]');
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// Confirm delete actions
+// Confirm delete actions for any forms that are intended to remove data.
 document.querySelectorAll('form[action*="DELETE"]').forEach(form => {
   form.addEventListener('submit', function(e) {
     if (!confirm('Are you sure you want to delete this item?')) {
@@ -37,7 +38,7 @@ document.querySelectorAll('form[action*="DELETE"]').forEach(form => {
   });
 });
 
-// Auto-hide alerts after 5 seconds
+// Auto-hide alert messages after a short delay.
 setTimeout(function() {
   const alerts = document.querySelectorAll('.alert:not(.alert-warning):not(.alert-dark)');
   alerts.forEach(alert => {
@@ -47,7 +48,7 @@ setTimeout(function() {
   });
 }, 5000);
 
-// Sidebar navigation active state
+// Highlight the active sidebar or navigation link based on the current page path.
 const currentPath = window.location.pathname;
 document.querySelectorAll('.sidebar-nav-link, .nav-link-luxury').forEach(link => {
   const href = link.getAttribute('href');
@@ -56,7 +57,7 @@ document.querySelectorAll('.sidebar-nav-link, .nav-link-luxury').forEach(link =>
   }
 });
 
-// Regular nav links
+// Highlight regular nav links too, if they match the current route.
 document.querySelectorAll('.nav-link').forEach(link => {
   if (link.getAttribute('href') === currentPath) {
     link.classList.add('active');

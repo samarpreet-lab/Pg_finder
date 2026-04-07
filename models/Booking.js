@@ -1,27 +1,33 @@
 const fs = require('fs');
 const path = require('path');
 
+// Path to the central JSON file that stores room and booking data.
 const dataPath = path.join(__dirname, '../data/data.json');
 
+// Read the data file and return parsed JSON.
 const loadData = () => {
   const data = fs.readFileSync(dataPath, 'utf-8');
   return JSON.parse(data);
 };
 
+// Save the updated JSON data back to disk.
 const saveData = (data) => {
   fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
 };
 
+// Return the full list of bookings from storage.
 const getAllBookings = () => {
   const data = loadData();
   return data.bookings;
 };
 
+// Find a single booking by its unique ID.
 const getBookingById = (id) => {
   const data = loadData();
   return data.bookings.find(booking => booking._id === id) || null;
 };
 
+// Create a new booking record for a room and save it.
 const createBooking = (guestName, email, phone, roomId, checkIn, checkOut, guests, months) => {
   const data = loadData();
   const room = data.rooms.find(r => r._id === roomId);
@@ -55,6 +61,7 @@ const createBooking = (guestName, email, phone, roomId, checkIn, checkOut, guest
   return newBooking;
 };
 
+// Change the status of an existing booking (for example to Confirmed).
 const updateBookingStatus = (id, status) => {
   const data = loadData();
   const bookingIndex = data.bookings.findIndex(booking => booking._id === id);
@@ -67,6 +74,7 @@ const updateBookingStatus = (id, status) => {
   return null;
 };
 
+// Remove a booking from storage by its ID.
 const deleteBooking = (id) => {
   const data = loadData();
   data.bookings = data.bookings.filter(booking => booking._id !== id);
@@ -74,6 +82,7 @@ const deleteBooking = (id) => {
   return true;
 };
 
+// Return the most recent bookings, sorted newest first.
 const getRecentBookings = (limit = 5) => {
   const data = loadData();
   return [...data.bookings]
@@ -81,11 +90,13 @@ const getRecentBookings = (limit = 5) => {
     .slice(0, limit);
 };
 
+// Return bookings filtered by a specific status value.
 const getBookingsByStatus = (status) => {
   const data = loadData();
   return data.bookings.filter(booking => booking.status === status);
 };
 
+// Calculate total revenue from all confirmed bookings.
 const calculateRevenue = () => {
   const data = loadData();
   return data.bookings
