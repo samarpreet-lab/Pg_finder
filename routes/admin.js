@@ -3,10 +3,6 @@ const router = express.Router();
 const Room = require('../models/Room');
 const Booking = require('../models/Booking');
 
-// This router handles all admin-side pages and actions.
-// It uses the Room and Booking model helpers to manage data,
-// then renders admin-specific views with the required information.
-
 // Admin Dashboard
 // Loads summary numbers and recent booking entries so the admin can see platform status.
 router.get('/', (req, res) => {
