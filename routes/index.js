@@ -3,8 +3,6 @@ const router = express.Router();
 const Room = require('../models/Room');
 const Booking = require('../models/Booking');
 
-// This file defines the public-facing routes for guests.
-// Each route loads data from models, then renders an EJS view.
 
 // Home Page
 // Loads available rooms and renders the landing page with featured listings.
