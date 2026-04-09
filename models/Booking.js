@@ -101,7 +101,7 @@ const calculateRevenue = () => {
   const data = loadData();
   return data.bookings
     .filter(booking => booking.status === 'Confirmed')
-    .reduce((total, booking) => total + booking.totalPrice, 0);
+    .reduce((total, booking) => total + Math.max(0, booking.totalPrice), 0);
 };
 
 module.exports = {

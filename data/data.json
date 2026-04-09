@@ -161,6 +161,26 @@
       },
       "status": "Confirmed",
       "createdAt": "2026-04-06T12:05:55.006Z"
+    },
+    {
+      "_id": "book1775631593014",
+      "guestName": "test",
+      "email": "test@gmail.com",
+      "phone": "25544433224",
+      "room": "room001",
+      "checkIn": "2026-04-09",
+      "checkOut": "2026-04-10",
+      "guests": 1,
+      "months": 1,
+      "monthlyRate": 10000,
+      "totalPrice": 10000,
+      "utilities": {
+        "electricity": "separate",
+        "water": "included",
+        "description": "Water included in rent, electricity charged as used"
+      },
+      "status": "Confirmed",
+      "createdAt": "2026-04-08T06:59:53.014Z"
     }
   ]
 }
