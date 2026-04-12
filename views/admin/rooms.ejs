@@ -1,29 +1,6 @@
 ﻿<%- include('../partials/header') %>
 
-<aside class="position-fixed top-0 start-0 h-100 luxury-sidebar d-flex flex-column p-4 p-xl-5">
-  <div class="mb-4">
-    <span class="font-serif fs-3 fw-bold d-block text-primary-luxury mb-1">StayEase</span>
-    <span class="text-muted-luxury text-uppercase fw-bold subheading-light">Affordable Living</span>
-  </div>
-  
-  <nav class="flex-grow-1 d-flex flex-column gap-3 mt-4">
-    <a href="/admin" class="nav-link-luxury">
-      <i class="bi bi-speedometer2"></i> Dashboard
-    </a>
-    <a href="/admin/rooms" class="nav-link-luxury active">
-      <i class="bi bi-building"></i> Properties
-    </a>
-    <a href="/admin/bookings" class="nav-link-luxury">
-      <i class="bi bi-calendar2-check"></i> Reservations
-    </a>
-  </nav>
-
-  <div class="mt-auto pt-4 border-top border-dark border-opacity-10 d-flex flex-column gap-3">
-    <a href="/" class="nav-link-luxury">
-      <i class="bi bi-box-arrow-right"></i> Sign Out
-    </a>
-  </div>
-</aside>
+<%- include('../partials/adminSidebar', { activePage: 'rooms' }) %>
 
 <main class="luxury-main">
   <header class="position-sticky top-0 luxury-header px-4 px-xl-5 py-4 d-flex justify-content-between align-items-center">

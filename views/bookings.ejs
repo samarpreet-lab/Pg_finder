@@ -34,6 +34,7 @@
                 <th>Check-In</th>
                 <th>Check-Out</th>
                 <th>Duration</th>
+                <th>Aadhar</th>
                 <th>Status</th>
                 <th class="text-end">Action</th>
               </tr>
@@ -48,9 +49,19 @@
                 <td class="text-primary-luxury font-sans"><%= booking.guestName %></td>
                 <td class="text-muted-luxury font-sans"><%= new Date(booking.checkIn).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %></td>
                 <td class="text-muted-luxury font-sans"><%= new Date(booking.checkOut).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %></td>
-                <td class="text-muted-luxury font-sans">
-                  <% const months = booking.months || 1; %>
-                  <%= months %> <%= months === 1 ? 'month' : 'months' %>
+                <td>
+                  <% if (booking.aadharNumber) { %>
+                    <span class="badge badge-luxury badge-pending">
+                      <i class="bi bi-card-checklist"></i> <%= booking.aadharNumber %>
+                    </span>
+                    <% if (booking.aadharPdf) { %>
+                      <a href="/view-aadhar/<%= booking._id %>" class="btn btn-link btn-sm ms-2" target="_blank">
+                        <i class="bi bi-download"></i>
+                      </a>
+                    <% } %>
+                  <% } else { %>
+                    <span class="text-muted">N/A</span>
+                  <% } %>
                 </td>
                 <td>
                   <span class="badge badge-luxury badge-confirmed">
@@ -90,10 +101,10 @@
           </div>
           <div class="col-md-4">
             <div class="stat-card">
-              <div class="stat-label">Total Spent</div>
-              <div class="stat-value">₹<%= bookings.reduce((sum, b) => sum + (b.room ? b.room.monthlyPrice * (b.months || 1) : 0), 0) %></div>
+              <div class="stat-label">Total Revenue</div>
+              <div class="stat-value">₹<%= bookings.reduce((sum, b) => sum + (b.totalPrice || 0), 0) %></div>
               <div class="stat-divider"></div>
-              <p class="font-sans mb-0 text-small-muted">Lifetime spending</p>
+              <p class="font-sans mb-0 text-small-muted">All time aggregate revenue</p>
             </div>
           </div>
         </div>

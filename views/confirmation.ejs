@@ -46,10 +46,6 @@
                 <td><%= booking.guests %> person(s)</td>
               </tr>
               <tr>
-                <th>Duration</th>
-                <td><%= booking.months %> month(s)</td>
-              </tr>
-              <tr>
                 <th>Monthly Rate</th>
                 <td>₹<%= booking.monthlyRate %>/month</td>
               </tr>
@@ -65,7 +61,34 @@
           </div>
         </div>
 
-        <!-- Utilities Information -->
+                 <!-- Aadhar Information -->
+         <div class="luxury-card-static mb-4">
+           <div class="p-4 border-bottom">
+             <span class="font-sans subheading">
+               <i class="bi bi-card-checklist"></i> Aadhar Verification
+             </span>
+           </div>
+           <div class="p-4">
+             <div class="row g-4">
+               <div class="col-md-6">
+                 <p class="font-sans mb-1 subheading-light">Aadhar Number</p>
+                 <span class="badge badge-luxury badge-confirmed"><%= booking.aadharNumber %></span>
+               </div>
+               <div class="col-md-6">
+                 <p class="font-sans mb-1 subheading-light">Upload Date</p>
+                 <span class="badge badge-luxury badge-confirmed"><%= booking.aadharUploadDate ? new Date(booking.aadharUploadDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Not Uploaded' %></span>
+               </div>
+             </div>
+             <% if (booking.aadharPdf) { %>
+             <div class="mt-3">
+               <a href="/view-aadhar/<%= booking._id %>" class="btn btn-sm btn-luxury-primary" target="_blank">
+                 <i class="bi bi-download"></i> Download Aadhar Document
+               </a>
+             </div>
+             <% } %>
+           </div>
+         </div>
+<!-- Utilities Information -->
         <% if (booking.utilities) { %>
         <div class="luxury-card-static mb-4">
           <div class="p-4 border-bottom">
@@ -105,3 +128,4 @@
 </main>
 
 <%- include('partials/footer') %>
+

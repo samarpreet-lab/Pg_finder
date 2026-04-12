@@ -48,25 +48,40 @@
                 </span>
               </div>
               <div class="card-body p-4">
-                <form action="/book/<%= room._id %>" method="POST">
+                <div class="mb-4 pb-3 border-bottom border-dark border-opacity-10">
+                  <small class="text-muted-luxury"><span class="text-danger fw-bold">*</span> indicates required fields</small>
+                </div>
+                <form action="/book/<%= room._id %>" method="POST" enctype="multipart/form-data">
                   <div class="mb-4">
-                    <label class="form-label">Full Name</label>
+                    <label class="form-label">Full Name <span class="text-danger fw-bold">*</span></label>
                     <input type="text" name="guestName" class="form-control" placeholder="Enter your name" required/>
                   </div>
 
                   <div class="mb-4">
-                    <label class="form-label">Email Address</label>
+                    <label class="form-label">Email Address <span class="text-danger fw-bold">*</span></label>
                     <input type="email" name="email" class="form-control" placeholder="you@example.com" required/>
                   </div>
 
                   <div class="mb-4">
-                    <label class="form-label">Phone Number</label>
+                    <label class="form-label">Phone Number <span class="text-danger fw-bold">*</span></label>
                     <input type="tel" name="phone" class="form-control" placeholder="10-digit mobile number" required/>
+                  </div>
+
+                  <div class="mb-4">
+                    <label class="form-label">Aadhar Number <span class="text-danger fw-bold">*</span></label>
+                    <input type="text" name="aadharNumber" class="form-control" placeholder="12-digit Aadhar number" pattern="[0-9]{12}" maxlength="12" required/>
+                    <small class="form-text text-muted">Enter your 12-digit Aadhar number</small>
+                  </div>
+
+                  <div class="mb-4">
+                    <label class="form-label">Upload Aadhar Card (PDF or JPG) <span class="text-danger fw-bold">*</span></label>
+                    <input type="file" name="aadharPdf" class="form-control" accept=".pdf,.jpg,.jpeg" required/>
+                    <small class="form-text text-muted">Max file size: 5MB. Supported formats: PDF, JPG, JPEG</small>
                   </div>
 
                   <div class="row g-3 mb-4">
                     <div class="col-md-6">
-                      <label class="form-label">Move-In Date</label>
+                      <label class="form-label">Move-In Date <span class="text-danger fw-bold">*</span></label>
                       <input type="date" name="checkIn" id="checkIn" class="form-control" required/>
                     </div>
                     <div class="col-md-6">
@@ -80,21 +95,11 @@
                       <label class="form-label">Number of Guests</label>
                       <input type="number" name="guests" class="form-control" value="1" min="1" max="10"/>
                     </div>
-                    <div class="col-md-6">
-                      <label class="form-label">Duration (Months)</label>
-                      <input type="number" name="months" id="months" class="form-control" value="1" min="1" max="12" required/>
-                    </div>
                   </div>
 
                   <div class="price-preview d-none mb-4" id="pricePreview">
-                    <div class="mb-2 fs-09">
-                      <strong>Monthly Rate:</strong> <span class="float-end">₹<%= room.monthlyPrice %></span>
-                    </div>
-                    <div class="mb-2 fs-09">
-                      <strong id="monthsDisplay">Months: 1</strong>
-                    </div>
                     <div class="price-preview-total">
-                      <strong class="price-preview-total">Total Rent: ₹<span id="totalAmount"><%= room.monthlyPrice %></span></strong>
+                      <strong class="price-preview-total">Monthly Rent: ₹<span id="totalAmount"><%= room.monthlyPrice %></span></strong>
                     </div>
                   </div>
 
@@ -112,23 +117,16 @@
 </main>
 
 <script>
-  const pricePerMonth = <%= room.monthlyPrice || 0 %>;
-  const monthsInput = document.getElementById('months');
+  const checkInInput = document.getElementById('checkIn');
   const pricePreview = document.getElementById('pricePreview');
-  const totalAmount = document.getElementById('totalAmount');
-  const monthsDisplay = document.getElementById('monthsDisplay');
 
-  function updatePrice() {
-    const months = parseInt(monthsInput.value) || 1;
-    const total = pricePerMonth * months;
-    totalAmount.textContent = '₹' + total;
-    monthsDisplay.textContent = 'Months: ' + months;
-    pricePreview.classList.remove('d-none');
+  function showPricePreview() {
+    if (checkInInput.value) {
+      pricePreview.classList.remove('d-none');
+    }
   }
 
-  monthsInput.addEventListener('change', updatePrice);
-  monthsInput.addEventListener('input', updatePrice);
-  updatePrice();
+  checkInInput.addEventListener('change', showPricePreview);
 </script>
 
 <%- include('partials/footer') %>

@@ -49,11 +49,14 @@ setTimeout(function() {
 }, 5000);
 
 // Highlight the active sidebar or navigation link based on the current page path.
+// Skip nav-link-luxury as it's handled server-side with activePage
 const currentPath = window.location.pathname;
-document.querySelectorAll('.sidebar-nav-link, .nav-link-luxury').forEach(link => {
+document.querySelectorAll('.sidebar-nav-link').forEach(link => {
   const href = link.getAttribute('href');
-  if (href === currentPath || (href !== '/' && currentPath.startsWith(href))) {
+  if (href === '/' ? currentPath === '/' : (currentPath === href || currentPath.startsWith(href + '/'))) {
     link.classList.add('active');
+  } else {
+    link.classList.remove('active');
   }
 });
 

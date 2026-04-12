@@ -1,9 +1,13 @@
 const express = require('express');
 const path = require('path');
+const connectDB = require('./config/database');
+
+// Connect to MongoDB
+connectDB();
 
 // Create the Express application instance.
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // Middleware to parse incoming form data and JSON payloads.
 app.use(express.urlencoded({ extended: true }));

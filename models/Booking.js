@@ -1,107 +1,165 @@
-const fs = require('fs');
-const path = require('path');
+const mongoose = require('mongoose');
 
-// Path to the central JSON file that stores room and booking data.
-const dataPath = path.join(__dirname, '../data/data.json');
+const bookingSchema = new mongoose.Schema({
+  guestName: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true
+  },
+  phone: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  aadharNumber: {
+    type: String,
+    required: true,
+    trim: true,
+    validate: {
+      validator: function(v) {
+        return /^\d{12}$/.test(v);
+      },
+      message: 'Aadhar number must be 12 digits'
+    }
+  },
+  aadharPdf: {
+    type: String,
+    required: false
+  },
+  aadharUploadDate: {
+    type: Date,
+    default: null
+  },
+  room: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Room',
+    required: true
+  },
+  checkIn: {
+    type: Date,
+    required: true
+  },
+  checkOut: {
+    type: Date,
+    required: false
+  },
+  guests: {
+    type: Number,
+    required: true,
+    min: 1
+  },
+  monthlyRate: {
+    type: Number,
+    required: true
+  },
+  totalPrice: {
+    type: Number,
+    required: true
+  },
+  utilities: {
+    electricity: String,
+    water: String,
+    description: String
+  },
+  status: {
+    type: String,
+    enum: ['Pending', 'Confirmed', 'Cancelled'],
+    default: 'Pending'
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
 
-// Read the data file and return parsed JSON.
-const loadData = () => {
-  const data = fs.readFileSync(dataPath, 'utf-8');
-  return JSON.parse(data);
+const Booking = mongoose.model('Booking', bookingSchema);
+
+const getAllBookings = async () => {
+  return await Booking.find().populate('room');
 };
 
-// Save the updated JSON data back to disk.
-const saveData = (data) => {
-  fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
+const getBookingById = async (id) => {
+  return await Booking.findById(id).populate('room');
 };
 
-// Return the full list of bookings from storage.
-const getAllBookings = () => {
-  const data = loadData();
-  return data.bookings;
-};
+const createBooking = async (guestName, email, phone, aadharNumber, roomId, checkIn, checkOut, guests, aadharPdf = null) => {
+  try {
+    const Room = require('./Room');
+    const room = await Room.getRoomById(roomId);
+    
+    if (!room) {
+      console.error(`Room not found: ${roomId}`);
+      return null;
+    }
 
-// Find a single booking by its unique ID.
-const getBookingById = (id) => {
-  const data = loadData();
-  return data.bookings.find(booking => booking._id === id) || null;
-};
+    const totalPrice = room.monthlyPrice;
 
-// Create a new booking record for a room and save it.
-const createBooking = (guestName, email, phone, roomId, checkIn, checkOut, guests, months) => {
-  const data = loadData();
-  const room = data.rooms.find(r => r._id === roomId);
-  
-  if (!room) {
+    const newBooking = new Booking({
+      guestName,
+      email,
+      phone,
+      aadharNumber,
+      aadharPdf,
+      aadharUploadDate: aadharPdf ? new Date() : null,
+      room: roomId,
+      checkIn,
+      checkOut,
+      guests: parseInt(guests),
+      monthlyRate: room.monthlyPrice,
+      totalPrice,
+      utilities: room.utilities,
+      status: 'Pending'
+    });
+
+    return await newBooking.save();
+  } catch (error) {
+    console.error('Error creating booking:', error);
     return null;
   }
-
-  const monthCount = parseInt(months) || 1;
-  const totalPrice = monthCount * room.monthlyPrice;
-
-  const newBooking = {
-    _id: `book${Date.now()}`,
-    guestName,
-    email,
-    phone,
-    room: roomId,
-    checkIn,
-    checkOut,
-    guests: parseInt(guests),
-    months: monthCount,
-    monthlyRate: room.monthlyPrice,
-    totalPrice,
-    utilities: room.utilities,
-    status: 'Pending',
-    createdAt: new Date().toISOString()
-  };
-
-  data.bookings.push(newBooking);
-  saveData(data);
-  return newBooking;
 };
 
-// Change the status of an existing booking (for example to Confirmed).
-const updateBookingStatus = (id, status) => {
-  const data = loadData();
-  const bookingIndex = data.bookings.findIndex(booking => booking._id === id);
-  
-  if (bookingIndex > -1) {
-    data.bookings[bookingIndex].status = status;
-    saveData(data);
-    return data.bookings[bookingIndex];
+const updateBookingStatus = async (id, status) => {
+  try {
+    return await Booking.findByIdAndUpdate(id, { status }, { new: true });
+  } catch (error) {
+    console.error('Error updating booking status:', error);
+    return null;
   }
-  return null;
 };
 
-// Remove a booking from storage by its ID.
-const deleteBooking = (id) => {
-  const data = loadData();
-  data.bookings = data.bookings.filter(booking => booking._id !== id);
-  saveData(data);
-  return true;
+const deleteBooking = async (id) => {
+  try {
+    await Booking.findByIdAndDelete(id);
+    return true;
+  } catch (error) {
+    console.error('Error deleting booking:', error);
+    return false;
+  }
 };
 
-// Return the most recent bookings, sorted newest first.
-const getRecentBookings = (limit = 5) => {
-  const data = loadData();
-  return [...data.bookings]
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, limit);
+const getRecentBookings = async (limit = 5) => {
+  return await Booking.find()
+    .populate('room')
+    .sort({ createdAt: -1 })
+    .limit(limit);
 };
 
-// Return bookings filtered by a specific status value.
-const getBookingsByStatus = (status) => {
-  const data = loadData();
-  return data.bookings.filter(booking => booking.status === status);
+const getBookingsByStatus = async (status) => {
+  return await Booking.find({ status }).populate('room');
 };
 
-// Calculate total revenue from all confirmed bookings.
-const calculateRevenue = () => {
-  const data = loadData();
-  return data.bookings
-    .filter(booking => booking.status === 'Confirmed')
-    .reduce((total, booking) => total + Math.max(0, booking.totalPrice), 0);
+const calculateRevenue = async () => {
+  const result = await Booking.aggregate([
+    { $match: { status: 'Confirmed' } },
+    { $group: { _id: null, total: { $sum: '$totalPrice' } } }
+  ]);
+  return result.length > 0 ? result[0].total : 0;
 };
 
 module.exports = {
@@ -113,6 +171,5 @@ module.exports = {
   getRecentBookings,
   getBookingsByStatus,
   calculateRevenue,
-  loadData,
-  saveData
+  Booking
 };

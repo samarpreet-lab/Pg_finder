@@ -1,96 +1,122 @@
-const fs = require('fs');
-const path = require('path');
+const mongoose = require('mongoose');
 
-// Path to the central JSON file that stores room and booking data.
-const dataPath = path.join(__dirname, '../data/data.json');
+const roomSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  type: {
+    type: String,
+    required: true,
+    enum: ['Single', 'Double', 'Suite', 'Shared']
+  },
+  monthlyPrice: {
+    type: Number,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  },
+  image: {
+    type: String,
+    default: 'https://via.placeholder.com/400x250?text=Room+Image'
+  },
+  amenities: [{
+    type: String
+  }],
+  utilities: {
+    electricity: String,
+    water: String,
+    description: String
+  },
+  isAvailable: {
+    type: Boolean,
+    default: true
+  },
+  rating: {
+    type: Number,
+    min: 0,
+    max: 5,
+    default: 4.0
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
 
-// Read the data file and return parsed JSON.
-const loadRooms = () => {
-  const data = fs.readFileSync(dataPath, 'utf-8');
-  return JSON.parse(data);
+const Room = mongoose.model('Room', roomSchema);
+
+const getAllRooms = async () => {
+  return await Room.find();
 };
 
-// Save the updated JSON data back to disk.
-const saveRooms = (data) => {
-  fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
+const getRoomById = async (id) => {
+  return await Room.findById(id);
 };
 
-// Return the full list of rooms from storage.
-const getAllRooms = () => {
-  const data = loadRooms();
-  return data.rooms;
-};
-
-// Find a single room by its unique ID.
-const getRoomById = (id) => {
-  const data = loadRooms();
-  return data.rooms.find(room => room._id === id) || null;
-};
-
-// Add a new room entry using the provided values.
-const addRoom = (name, type, monthlyPrice, description, image = 'https://via.placeholder.com/400x250?text=Room+Image', amenities = ['WiFi'], utilities = { electricity: 'separate', water: 'included', description: 'Check details' }, rating = 4.0) => {
-  const data = loadRooms();
-  
-  const newRoom = {
-    _id: `room${Date.now()}`,
-    name,
-    type,
-    monthlyPrice: parseInt(monthlyPrice),
-    description,
-    image,
-    amenities: Array.isArray(amenities) ? amenities : [amenities],
-    isAvailable: true,
-    utilities,
-    rating: parseFloat(rating) || 4.0
-  };
-  
-  data.rooms.push(newRoom);
-  saveRooms(data);
-  return newRoom;
-};
-
-// Update the details of an existing room by ID.
-const updateRoom = (id, name, type, monthlyPrice, description, image, amenities, isAvailable, utilities = { electricity: 'separate', water: 'included', description: 'Check details' }, rating) => {
-  const data = loadRooms();
-  const roomIndex = data.rooms.findIndex(room => room._id === id);
-  
-  if (roomIndex > -1) {
-    data.rooms[roomIndex] = {
-      ...data.rooms[roomIndex],
+const addRoom = async (name, type, monthlyPrice, description, image = 'https://via.placeholder.com/400x250?text=Room+Image', amenities = ['WiFi'], utilities = { electricity: 'separate', water: 'included', description: 'Check details' }, rating = 4.0) => {
+  try {
+    const newRoom = new Room({
       name,
       type,
       monthlyPrice: parseInt(monthlyPrice),
       description,
       image,
       amenities: Array.isArray(amenities) ? amenities : [amenities],
-      isAvailable,
       utilities,
-      rating: parseFloat(rating)
-    };
-    saveRooms(data);
-    return data.rooms[roomIndex];
+      isAvailable: true,
+      rating: parseFloat(rating) || 4.0
+    });
+    return await newRoom.save();
+  } catch (error) {
+    console.error('Error adding room:', error);
+    return null;
   }
-  return null;
 };
 
-// Remove a room from the data store by its ID.
-const deleteRoom = (id) => {
-  const data = loadRooms();
-  data.rooms = data.rooms.filter(room => room._id !== id);
-  saveRooms(data);
-  return true;
+const updateRoom = async (id, name, type, monthlyPrice, description, image, amenities, isAvailable, utilities = { electricity: 'separate', water: 'included', description: 'Check details' }, rating) => {
+  try {
+    const room = await Room.findByIdAndUpdate(
+      id,
+      {
+        name,
+        type,
+        monthlyPrice: parseInt(monthlyPrice),
+        description,
+        image,
+        amenities: Array.isArray(amenities) ? amenities : [amenities],
+        utilities,
+        isAvailable,
+        rating: parseFloat(rating)
+      },
+      { new: true }
+    );
+    return room;
+  } catch (error) {
+    console.error('Error updating room:', error);
+    return null;
+  }
 };
 
-// Return only rooms that are currently available for booking.
-const getAvailableRooms = () => {
-  const data = loadRooms();
-  return data.rooms.filter(room => room.isAvailable);
+const deleteRoom = async (id) => {
+  try {
+    await Room.findByIdAndDelete(id);
+    return true;
+  } catch (error) {
+    console.error('Error deleting room:', error);
+    return false;
+  }
 };
 
-// Return available rooms filtered by the selected room type.
-const getRoomsByType = (type) => {
-  const data = loadRooms();
-  return data.rooms.filter(room => room.type === type && room.isAvailable);
+const getAvailableRooms = async () => {
+  return await Room.find({ isAvailable: true });
+};
+
+const getRoomsByType = async (type) => {
+  return await Room.find({ type, isAvailable: true });
 };
 
 module.exports = {
@@ -101,6 +127,5 @@ module.exports = {
   deleteRoom,
   getAvailableRooms,
   getRoomsByType,
-  loadRooms,
-  saveRooms
+  Room
 };

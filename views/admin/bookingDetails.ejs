@@ -1,0 +1,256 @@
+<%- include('../partials/header') %>
+
+<%- include('../partials/adminSidebar', { activePage: 'bookings' }) %>
+
+<main class="luxury-main">
+  <header class="position-sticky top-0 luxury-header px-4 px-xl-5 py-4 d-flex justify-content-between align-items-center">
+    <h1 class="font-serif fs-2 fw-bold text-primary-luxury mb-0">Booking Details</h1>
+    <a href="/admin/bookings" class="btn btn-luxury-primary btn-sm">
+      <i class="bi bi-arrow-left"></i> Back to Bookings
+    </a>
+  </header>
+
+  <div class="px-4 px-xl-5 py-5">
+    <div class="row g-4">
+      <!-- Guest Information -->
+      <div class="col-lg-6">
+        <div class="luxury-card p-4 mb-4">
+          <h5 class="font-serif text-primary-luxury mb-4">
+            <i class="bi bi-person-circle"></i> Guest Information
+          </h5>
+          <div class="mb-3">
+            <label class="text-muted-luxury small text-uppercase fw-bold">Name</label>
+            <p class="font-serif fs-5 fw-bold text-primary-luxury"><%= booking.guestName %></p>
+          </div>
+          <div class="mb-3">
+            <label class="text-muted-luxury small text-uppercase fw-bold">Email</label>
+            <p class="font-serif text-primary-luxury"><%= booking.email %></p>
+          </div>
+          <div class="mb-3">
+            <label class="text-muted-luxury small text-uppercase fw-bold">Phone</label>
+            <p class="font-serif text-primary-luxury"><%= booking.phone %></p>
+          </div>
+          <div class="mb-0">
+            <label class="text-muted-luxury small text-uppercase fw-bold">Booking ID</label>
+            <p class="font-serif text-primary-luxury"><%= booking._id.toString().slice(-12) %></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aadhar Information -->
+      <div class="col-lg-6">
+        <div class="luxury-card p-4 mb-4">
+          <h5 class="font-serif text-primary-luxury mb-4">
+            <i class="bi bi-shield-check"></i> Aadhar Verification
+          </h5>
+          <div class="mb-3">
+            <label class="text-muted-luxury small text-uppercase fw-bold">Aadhar Number</label>
+            <p class="font-serif fs-5 fw-bold text-primary-luxury">
+              <% const aadharNum = booking.aadharNumber; %>
+              <%= aadharNum.slice(0, 4) %>-<%= aadharNum.slice(4, 8) %>-<%= aadharNum.slice(8, 12) %>
+              <span class="badge badge-success ms-2">
+                <i class="bi bi-check-circle-fill"></i> Verified
+              </span>
+            </p>
+          </div>
+          <% if (booking.aadharUploadDate) { %>
+            <div class="mb-3">
+              <label class="text-muted-luxury small text-uppercase fw-bold">Upload Date</label>
+              <p class="font-serif text-primary-luxury">
+                <%= new Date(booking.aadharUploadDate).toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                }) %>
+              </p>
+            </div>
+          <% } %>
+          <% if (booking.aadharPdf) { %>
+            <div class="mb-0">
+              <label class="text-muted-luxury small text-uppercase fw-bold">Document</label>
+              <p class="font-serif mb-2">Aadhar PDF Document</p>
+              <a href="/admin/bookings/<%= booking._id %>/aadhar/download" class="btn btn-luxury-primary btn-sm">
+                <i class="bi bi-download"></i> Download PDF
+              </a>
+              <button type="button" class="btn btn-luxury-outline btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#aadharModal">
+                <i class="bi bi-eye"></i> View PDF
+              </button>
+            </div>
+          <% } else { %>
+            <p class="text-muted-luxury mb-0">No Aadhar document uploaded</p>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Booking Details -->
+      <div class="col-lg-6">
+        <div class="luxury-card p-4 mb-4">
+          <h5 class="font-serif text-primary-luxury mb-4">
+            <i class="bi bi-calendar-event"></i> Booking Details
+          </h5>
+          <div class="mb-3">
+            <label class="text-muted-luxury small text-uppercase fw-bold">Accommodation</label>
+            <p class="font-serif fs-5 fw-bold text-primary-luxury"><%= booking.room?.name || 'Deleted Room' %></p>
+          </div>
+          <div class="mb-3">
+            <label class="text-muted-luxury small text-uppercase fw-bold">Check-In</label>
+            <p class="font-serif text-primary-luxury">
+              <% if (booking.checkIn) { %>
+                <%= new Date(booking.checkIn).toLocaleDateString('en-US', { 
+                  weekday: 'short',
+                  year: 'numeric', 
+                  month: 'short', 
+                  day: 'numeric'
+                }) %>
+              <% } else { %>
+                Not set
+              <% } %>
+            </p>
+          </div>
+          <div class="mb-3">
+            <label class="text-muted-luxury small text-uppercase fw-bold">Check-Out</label>
+            <p class="font-serif text-primary-luxury">
+              <% if (booking.checkOut) { %>
+                <%= new Date(booking.checkOut).toLocaleDateString('en-US', { 
+                  weekday: 'short',
+                  year: 'numeric', 
+                  month: 'short', 
+                  day: 'numeric'
+                }) %>
+              <% } else { %>
+                Not set
+              <% } %>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Details -->
+      <div class="col-lg-6">
+        <div class="luxury-card p-4 mb-4">
+          <h5 class="font-serif text-primary-luxury mb-4">
+            <i class="bi bi-credit-card"></i> Financial Summary
+          </h5>
+          <div class="mb-3">
+            <label class="text-muted-luxury small text-uppercase fw-bold">Monthly Rate</label>
+            <p class="font-serif fs-5 fw-bold text-primary-luxury">₹<%= booking.monthlyRate.toLocaleString() %></p>
+          </div>
+          <div class="mb-3 pb-3 border-bottom border-dark border-opacity-10">
+            <label class="text-muted-luxury small text-uppercase fw-bold">Utilities</label>
+            <p class="font-serif text-primary-luxury"><%= booking.utilities?.description || 'Not specified' %></p>
+          </div>
+          <div class="mb-0">
+            <label class="text-muted-luxury small text-uppercase fw-bold">Total Amount</label>
+            <p class="font-serif fs-4 fw-bold text-success">₹<%= booking.totalPrice.toLocaleString() %></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Booking Status -->
+      <div class="col-lg-6">
+        <div class="luxury-card p-4 mb-4">
+          <h5 class="font-serif text-primary-luxury mb-4">
+            <i class="bi bi-info-circle"></i> Status
+          </h5>
+          <div class="mb-3">
+            <label class="text-muted-luxury small text-uppercase fw-bold">Current Status</label>
+            <% if (booking.status === 'Confirmed') { %>
+              <span class="badge badge-confirmed">
+                <i class="bi bi-check-circle-fill icon-sm"></i> Confirmed
+              </span>
+            <% } else if (booking.status === 'Cancelled') { %>
+              <span class="badge badge-cancelled">
+                <i class="bi bi-x-circle-fill icon-sm"></i> Cancelled
+              </span>
+            <% } else { %>
+              <span class="badge badge-pending">
+                <i class="bi bi-clock-fill icon-sm"></i> Pending
+              </span>
+            <% } %>
+          </div>
+          <form action="/admin/bookings/<%= booking._id %>/update" method="POST">
+            <label class="text-muted-luxury small text-uppercase fw-bold d-block mb-2">Update Status</label>
+            <select name="status" class="form-select form-select-sm form-select-luxury mb-3">
+              <option value="Pending" <%= booking.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+              <option value="Confirmed" <%= booking.status === 'Confirmed' ? 'selected' : '' %>>Confirmed</option>
+              <option value="Cancelled" <%= booking.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+            </select>
+            <button type="submit" class="btn btn-luxury-primary btn-sm w-100">
+              <i class="bi bi-save"></i> Update Status
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Guest Details -->
+      <div class="col-lg-6">
+        <div class="luxury-card p-4 mb-4">
+          <h5 class="font-serif text-primary-luxury mb-4">
+            <i class="bi bi-people"></i> Guest Details
+          </h5>
+          <div class="mb-0">
+            <label class="text-muted-luxury small text-uppercase fw-bold">Number of Guests</label>
+            <p class="font-serif fs-5 fw-bold text-primary-luxury"><%= booking.guests %> guest<%= booking.guests > 1 ? 's' : '' %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- PDF Viewer Modal -->
+<% if (booking.aadharPdf) { %>
+<div class="modal fade" id="aadharModal" tabindex="-1" aria-labelledby="aadharModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="aadharModalLabel">Aadhar Document - <%= booking.guestName %></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="pdfContainer" style="width: 100%; height: 600px; overflow: auto;">
+          <p class="text-center text-muted">Loading PDF...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  const pdfUrl = '<%= booking.aadharPdf %>';
+  
+  document.getElementById('aadharModal').addEventListener('show.bs.modal', function() {
+    pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
+      const container = document.getElementById('pdfContainer');
+      container.innerHTML = '';
+      
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        pdf.getPage(pageNum).then(function(page) {
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          const viewport = page.getViewport({ scale: 1.5 });
+          
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          
+          page.render({
+            canvasContext: context,
+            viewport: viewport
+          }).promise.then(function() {
+            container.appendChild(canvas);
+            canvas.style.display = 'block';
+            canvas.style.margin = '10px auto';
+          });
+        });
+      }
+    }).catch(function(error) {
+      document.getElementById('pdfContainer').innerHTML = '<p class="text-danger">Error loading PDF: ' + error.message + '</p>';
+    });
+  });
+</script>
+<% } %>
+
+<%- include('../partials/footer') %>
