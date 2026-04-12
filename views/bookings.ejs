@@ -26,51 +26,52 @@
       <!-- Bookings Table -->
       <div class="col-12">
         <div class="table-responsive">
-          <table class="table table-borderless table-luxury w-100 mb-0">
+          <table class="table table-borderless w-100 mb-0 admin-table-spaced">
             <thead>
               <tr>
-                <th>Room Name</th>
-                <th>Guest Name</th>
-                <th>Check-In</th>
-                <th>Check-Out</th>
-                <th>Duration</th>
-                <th>Aadhar</th>
-                <th>Status</th>
-                <th class="text-end">Action</th>
+                <th class="admin-table-header">Room</th>
+                <th class="admin-table-header">Guest</th>
+                <th class="admin-table-header">Check-In</th>
+                <th class="admin-table-header">Check-Out</th>
+                <th class="admin-table-header">Status</th>
+                <th class="admin-table-header text-end">Actions</th>
               </tr>
             </thead>
             <tbody>
               <% bookings.forEach(booking => { %>
-              <tr>
-                <td>
-                  <div class="font-serif fw-bold text-primary-luxury fs-4"><%= booking.room ? booking.room.name : 'Unknown Room' %></div>
-                  <div class="text-muted-luxury mt-1 subheading-light">Room</div>
+              <tr class="luxury-card-static">
+                <td class="admin-table-cell">
+                  <div class="font-serif fw-bold text-primary-luxury mb-1"><%= booking.room ? booking.room.name : 'Deleted Room' %></div>
+                  <small class="text-muted-luxury">₹<%= booking.monthlyRate %>/month</small>
                 </td>
-                <td class="text-primary-luxury font-sans"><%= booking.guestName %></td>
-                <td class="text-muted-luxury font-sans"><%= new Date(booking.checkIn).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %></td>
-                <td class="text-muted-luxury font-sans"><%= new Date(booking.checkOut).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %></td>
-                <td>
-                  <% if (booking.aadharNumber) { %>
-                    <span class="badge badge-luxury badge-pending">
-                      <i class="bi bi-card-checklist"></i> <%= booking.aadharNumber %>
+                <td class="admin-table-cell">
+                  <div class="font-serif fw-bold text-primary-luxury"><%= booking.guestName %></div>
+                  <small class="text-muted-luxury"><%= booking.email %></small>
+                </td>
+                <td class="admin-table-cell">
+                  <div class="text-muted-luxury"><%= new Date(booking.checkIn).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) %></div>
+                </td>
+                <td class="admin-table-cell">
+                  <div class="text-muted-luxury"><%= booking.checkOut ? new Date(booking.checkOut).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) : 'Not set' %></div>
+                </td>
+                <td class="admin-table-cell">
+                  <% if (booking.status === 'Confirmed') { %>
+                    <span class="badge badge-confirmed">
+                      <i class="bi bi-check-circle-fill icon-sm"></i> Confirmed
                     </span>
-                    <% if (booking.aadharPdf) { %>
-                      <a href="/view-aadhar/<%= booking._id %>" class="btn btn-link btn-sm ms-2" target="_blank">
-                        <i class="bi bi-download"></i>
-                      </a>
-                    <% } %>
+                  <% } else if (booking.status === 'Cancelled') { %>
+                    <span class="badge badge-cancelled">
+                      <i class="bi bi-x-circle-fill icon-sm"></i> Cancelled
+                    </span>
                   <% } else { %>
-                    <span class="text-muted">N/A</span>
+                    <span class="badge badge-pending">
+                      <i class="bi bi-clock-fill icon-sm"></i> Pending
+                    </span>
                   <% } %>
                 </td>
-                <td>
-                  <span class="badge badge-luxury badge-confirmed">
-                    <i class="bi bi-check-circle-fill"></i> Confirmed
-                  </span>
-                </td>
-                <td class="text-end">
-                  <a href="/confirmation/<%= booking._id %>" class="btn btn-luxury-primary btn-view-sm">
-                    <i class="bi bi-eye"></i> View
+                <td class="admin-table-cell text-end">
+                  <a href="/confirmation/<%= booking._id %>" class="btn btn-luxury-primary btn-sm">
+                    <i class="bi bi-eye"></i> View Details
                   </a>
                 </td>
               </tr>
@@ -80,35 +81,6 @@
         </div>
       </div>
 
-      <!-- Booking Stats -->
-      <div class="col-12 mt-5">
-        <div class="row g-4">
-          <div class="col-md-4">
-            <div class="stat-card">
-              <div class="stat-label">Total Bookings</div>
-              <div class="stat-value"><%= bookings.length %></div>
-              <div class="stat-divider"></div>
-              <p class="font-sans mb-0 text-small-muted">All time reservations</p>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="stat-card">
-              <div class="stat-label">Active Bookings</div>
-              <div class="stat-value"><%= bookings.filter(b => new Date(b.checkOut) > new Date()).length %></div>
-              <div class="stat-divider"></div>
-              <p class="font-sans mb-0 text-small-muted">Currently active stays</p>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="stat-card">
-              <div class="stat-label">Total Revenue</div>
-              <div class="stat-value">₹<%= bookings.reduce((sum, b) => sum + (b.totalPrice || 0), 0) %></div>
-              <div class="stat-divider"></div>
-              <p class="font-sans mb-0 text-small-muted">All time aggregate revenue</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
     <% } %>
 
