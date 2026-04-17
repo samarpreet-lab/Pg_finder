@@ -2,12 +2,247 @@ const express = require('express');
 const router = express.Router();
 const Room = require('../models/Room');
 const Booking = require('../models/Booking');
+const User = require('../models/User');
+const Admin = require('../models/Admin');
 const upload = require('../middleware/upload');
 
-// Home Page
+// ============================================================================
+// AUTHENTICATION ROUTES
+// ============================================================================
+
+// Get Register Form
+// Displays the registration page for new users.
+router.get('/register', (req, res) => {
+  try {
+    res.render('register', { title: 'Create Account', isAuthPage: true });
+  } catch (error) {
+    console.error('Error loading register page:', error);
+    res.status(500).render('register', { title: 'Create Account', error: 'An error occurred', isAuthPage: true });
+  }
+});
+
+// Post Register Form
+// Processes user registration with validation and error handling.
+router.post('/register', async (req, res) => {
+  try {
+    const { fullName, email, phone, password, confirmPassword, userType, city, agreeTerms } = req.body;
+
+    // Validation
+    if (!fullName || !email || !phone || !password || !confirmPassword || !userType) {
+      return res.status(400).render('register', {
+        title: 'Create Account',
+        error: 'All required fields must be filled',
+        isAuthPage: true
+      });
+    }
+
+    // Password match check
+    if (password !== confirmPassword) {
+      return res.status(400).render('register', {
+        title: 'Create Account',
+        error: 'Passwords do not match',
+        isAuthPage: true
+      });
+    }
+
+    // Password length check
+    if (password.length < 6) {
+      return res.status(400).render('register', {
+        title: 'Create Account',
+        error: 'Password must be at least 6 characters long',
+        isAuthPage: true
+      });
+    }
+
+    // Phone number validation (10 digits)
+    if (!/^\d{10}$/.test(phone)) {
+      return res.status(400).render('register', {
+        title: 'Create Account',
+        error: 'Please enter a valid 10-digit phone number',
+        isAuthPage: true
+      });
+    }
+
+    // Terms agreement check
+    if (!agreeTerms) {
+      return res.status(400).render('register', {
+        title: 'Create Account',
+        error: 'You must agree to the terms and conditions',
+        isAuthPage: true
+      });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.getUserByEmail(email);
+    if (existingUser) {
+      return res.status(400).render('register', {
+        title: 'Create Account',
+        error: 'Email already registered. Please use a different email or try logging in.',
+        isAuthPage: true
+      });
+    }
+
+    // Create new user
+    const newUser = await User.createUser({
+      fullName,
+      email: email.toLowerCase(),
+      phone,
+      password, // In production, this should be hashed using bcrypt
+      userType,
+      city
+    });
+
+    console.log('User registered successfully:', newUser._id);
+
+    // Auto-login user after registration
+    req.session.userId = newUser._id;
+    req.session.userName = newUser.fullName;
+    req.session.userEmail = newUser.email;
+
+    // Redirect to home page
+    res.redirect('/');
+  } catch (error) {
+    console.error('Error during registration:', error);
+    res.status(500).render('register', {
+      title: 'Create Account',
+      error: 'An error occurred during registration. Please try again.',
+      isAuthPage: true
+    });
+  }
+});
+
+// Get Login Form
+// Displays the login page for existing users.
+router.get('/login', (req, res) => {
+  try {
+    res.render('login', { title: 'Sign In', isAuthPage: true });
+  } catch (error) {
+    console.error('Error loading login page:', error);
+    res.status(500).render('login', { title: 'Sign In', error: 'An error occurred', isAuthPage: true });
+  }
+});
+
+// Post Login Form
+// Processes user login with email and password verification, or admin login with username and password.
+router.post('/login', async (req, res) => {
+  try {
+    const { loginType = 'user', email, username, password, rememberMe } = req.body;
+
+    if (loginType === 'admin') {
+      // Admin Login
+      if (!username || !password) {
+        return res.status(400).render('login', {
+          title: 'Sign In',
+          error: 'Admin username and password are required',
+          isAuthPage: true
+        });
+      }
+
+      // Find admin by username
+      const admin = await Admin.getAdminByUsername(username);
+      if (!admin) {
+        return res.status(401).render('login', {
+          title: 'Sign In',
+          error: 'Invalid admin credentials',
+          isAuthPage: true
+        });
+      }
+
+      // Check password (in production, use bcrypt.compare)
+      if (admin.password !== password) {
+        return res.status(401).render('login', {
+          title: 'Sign In',
+          error: 'Invalid admin credentials',
+          isAuthPage: true
+        });
+      }
+
+      // Set admin session
+      req.session.adminId = admin._id;
+      req.session.adminUsername = admin.username;
+      req.session.adminRole = admin.role;
+      req.session.isAdmin = true;
+
+      console.log('Admin logged in successfully:', admin._id);
+
+      // Redirect to admin portal
+      res.redirect('/admin');
+    } else {
+      // User Login
+      if (!email || !password) {
+        return res.status(400).render('login', {
+          title: 'Sign In',
+          error: 'Email and password are required',
+          isAuthPage: true
+        });
+      }
+
+      // Find user by email
+      const user = await User.getUserByEmail(email);
+      if (!user) {
+        return res.status(401).render('login', {
+          title: 'Sign In',
+          error: 'Invalid email or password',
+          isAuthPage: true
+        });
+      }
+
+      // Check password (in production, use bcrypt.compare)
+      if (user.password !== password) {
+        return res.status(401).render('login', {
+          title: 'Sign In',
+          error: 'Invalid email or password',
+          isAuthPage: true
+        });
+      }
+
+      // Set user session
+      req.session = req.session || {};
+      req.session.userId = user._id;
+      req.session.userName = user.fullName;
+      req.session.userEmail = user.email;
+      req.session.isAdmin = false;
+
+      console.log('User logged in successfully:', user._id);
+
+      // Redirect to home page
+      res.redirect('/');
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.status(500).render('login', {
+      title: 'Sign In',
+      error: 'An error occurred during login. Please try again.',
+      isAuthPage: true
+    });
+  }
+});
+
+// Logout Route
+// Clears user/admin session and redirects to login page.
+router.get('/logout', (req, res) => {
+  try {
+    req.session.destroy();
+    res.redirect('/login');
+  } catch (error) {
+    console.error('Error during logout:', error);
+    res.status(500).send('An error occurred during logout');
+  }
+});
+
+// ============================================================================
+// ROOM & BOOKING ROUTES
+// ============================================================================
+
+// Home Page - Redirect to login if not authenticated
 // Loads available rooms and renders the landing page with featured listings.
 router.get('/', async (req, res) => {
   try {
+    // If not logged in, redirect to login page
+    if (!req.session || !req.session.userId) {
+      return res.redirect('/login');
+    }
+
     const rooms = await Room.getAvailableRooms();
     const featuredRooms = rooms.slice(0, 3);
     res.render('index', { title: 'StayEase - Find Your Perfect Stay', rooms: featuredRooms });

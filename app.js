@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const session = require('express-session');
 const connectDB = require('./config/database');
 
 // Connect to MongoDB
@@ -8,6 +9,14 @@ connectDB();
 // Create the Express application instance.
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Session middleware configuration
+app.use(session({
+  secret: 'stayease-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 1000 * 60 * 60 * 24 } // 24 hours
+}));
 
 // Middleware to parse incoming form data and JSON payloads.
 app.use(express.urlencoded({ extended: true }));

@@ -1,0 +1,251 @@
+<%- include('partials/header') %>
+
+<main class="luxury-main-full">
+  <div class="auth-page-container">
+    <div class="col-lg-5 col-md-6 auth-card">
+      <div class="auth-card-body">
+        <!-- Header -->
+        <div class="text-center mb-5">
+          <h1 class="font-serif heading-section mb-2">Create Account</h1>
+          <p class="font-sans text-muted">Join StayEase and find your perfect PG</p>
+        </div>
+
+        <!-- Error Message -->
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="alert alert-danger alert-dismissible fade show auth-alert" role="alert">
+            <i class="bi bi-exclamation-circle"></i> <%= error %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        <% } %>
+
+        <!-- Success Message -->
+        <% if (typeof success !== 'undefined' && success) { %>
+          <div class="alert alert-success alert-dismissible fade show auth-alert" role="alert">
+            <i class="bi bi-check-circle"></i> <%= success %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        <% } %>
+
+        <!-- Registration Form -->
+        <form method="POST" action="/register" class="auth-form needs-validation" novalidate>
+          <!-- Full Name -->
+          <div class="mb-4">
+            <label for="fullName" class="form-label font-sans">Full Name</label>
+            <input 
+              type="text" 
+              class="form-control font-sans" 
+              id="fullName" 
+              name="fullName" 
+              placeholder="John Doe" 
+              required
+            />
+            <div class="invalid-feedback">
+              Full name is required.
+            </div>
+          </div>
+
+          <!-- Email Address -->
+          <div class="mb-4">
+            <label for="email" class="form-label font-sans">Email Address</label>
+            <input 
+              type="email" 
+              class="form-control font-sans" 
+              id="email" 
+              name="email" 
+              placeholder="your.email@example.com" 
+              required
+            />
+            <div class="invalid-feedback">
+              Please enter a valid email address.
+            </div>
+          </div>
+
+          <!-- Phone Number -->
+          <div class="mb-4">
+            <label for="phone" class="form-label font-sans">Phone Number</label>
+            <input 
+              type="tel" 
+              class="form-control font-sans" 
+              id="phone" 
+              name="phone" 
+              placeholder="10-digit phone number" 
+              pattern="[0-9]{10}" 
+              required
+            />
+            <small class="form-text">Enter a 10-digit phone number</small>
+            <div class="invalid-feedback">
+              Please enter a valid 10-digit phone number.
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="mb-4">
+            <label for="password" class="form-label font-sans">Password</label>
+            <div class="input-group">
+              <input 
+                type="password" 
+                class="form-control font-sans" 
+                id="password" 
+                name="password" 
+                placeholder="Create a strong password" 
+                minlength="6"
+                required
+              />
+              <button 
+                class="btn btn-outline-secondary font-sans" 
+                type="button" 
+                id="togglePassword"
+                onclick="togglePasswordVisibility('password', 'togglePassword')"
+              >
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+            <small class="form-text">Minimum 6 characters</small>
+            <div class="invalid-feedback">
+              Password must be at least 6 characters long.
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="mb-4">
+            <label for="confirmPassword" class="form-label font-sans">Confirm Password</label>
+            <div class="input-group">
+              <input 
+                type="password" 
+                class="form-control font-sans" 
+                id="confirmPassword" 
+                name="confirmPassword" 
+                placeholder="Confirm your password" 
+                required
+              />
+              <button 
+                class="btn btn-outline-secondary font-sans" 
+                type="button" 
+                id="toggleConfirmPassword"
+                onclick="togglePasswordVisibility('confirmPassword', 'toggleConfirmPassword')"
+              >
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+            <div class="invalid-feedback">
+              Passwords do not match.
+            </div>
+          </div>
+
+          <!-- User Type -->
+          <div class="mb-4">
+            <label for="userType" class="form-label font-sans">I am a</label>
+            <select class="form-select font-sans" id="userType" name="userType" required>
+              <option value="">-- Select Type --</option>
+              <option value="student">Student</option>
+              <option value="professional">Working Professional</option>
+              <option value="other">Other</option>
+            </select>
+            <div class="invalid-feedback">
+              Please select a user type.
+            </div>
+          </div>
+
+          <!-- City -->
+          <div class="mb-4">
+            <label for="city" class="form-label font-sans">City</label>
+            <input 
+              type="text" 
+              class="form-control font-sans" 
+              id="city" 
+              name="city" 
+              placeholder="e.g., Chandigarh"
+            />
+          </div>
+
+          <!-- Terms & Conditions -->
+          <div class="mb-4">
+            <div class="form-check">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                id="agreeTerms" 
+                name="agreeTerms"
+                required
+              />
+              <label class="form-check-label font-sans" for="agreeTerms">
+                I agree to the <a href="#" class="auth-link">Terms & Conditions</a> and <a href="#" class="auth-link">Privacy Policy</a>
+              </label>
+              <div class="invalid-feedback">
+                You must agree to the terms and conditions.
+              </div>
+            </div>
+          </div>
+
+          <!-- Sign Up Button -->
+          <button type="submit" class="btn btn-luxury-primary w-100 mb-3 py-2 font-sans fw-600">
+            <i class="bi bi-person-plus"></i> Create Account
+          </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="auth-divider">
+          <span class="auth-divider-text">OR</span>
+        </div>
+
+        <!-- Sign In Link -->
+        <div class="text-center">
+          <p class="font-sans text-muted mb-3">Already have an account?</p>
+          <a href="/login" class="btn btn-outline-dark w-100 py-2 font-sans fw-600">
+            Sign In
+          </a>
+        </div>
+
+        <!-- Back Home -->
+        <div class="text-center mt-5">
+          <a href="/" class="auth-back-link">
+            <i class="bi bi-arrow-left"></i> Back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  function togglePasswordVisibility(fieldId, buttonId) {
+    const passwordInput = document.getElementById(fieldId);
+    const toggleBtn = document.getElementById(buttonId);
+    
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      toggleBtn.innerHTML = '<i class="bi bi-eye-slash"></i>';
+    } else {
+      passwordInput.type = 'password';
+      toggleBtn.innerHTML = '<i class="bi bi-eye"></i>';
+    }
+  }
+
+  // Form validation
+  (function () {
+    'use strict';
+    const form = document.querySelector('.needs-validation');
+    form.addEventListener('submit', function (event) {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      
+      // Check if passwords match
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      
+      if (password !== confirmPassword) {
+        event.preventDefault();
+        event.stopPropagation();
+        document.getElementById('confirmPassword').classList.add('is-invalid');
+        alert('Passwords do not match!');
+        return;
+      }
+      
+      form.classList.add('was-validated');
+    }, false);
+  })();
+</script>
+
+<%- include('partials/footer') %>

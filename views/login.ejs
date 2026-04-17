@@ -1,0 +1,189 @@
+<%- include('partials/header') %>
+
+<main class="luxury-main-full">
+  <div class="auth-page-container">
+    <div class="col-md-5 col-lg-4 auth-card">
+      <div class="auth-card-body">
+        <!-- Header -->
+        <div class="text-center mb-5">
+          <h1 class="font-serif heading-section mb-2">Welcome Back</h1>
+          <p class="font-sans text-muted">Sign in to your StayEase account</p>
+        </div>
+
+        <!-- Error Message -->
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="alert alert-danger alert-dismissible fade show auth-alert" role="alert">
+            <i class="bi bi-exclamation-circle"></i> <%= error %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        <% } %>
+
+        <!-- Success Message -->
+        <% if (typeof success !== 'undefined' && success) { %>
+          <div class="alert alert-success alert-dismissible fade show auth-alert" role="alert">
+            <i class="bi bi-check-circle"></i> <%= success %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        <% } %>
+
+        <!-- Login Type Toggle -->
+        <div class="mb-4">
+          <div class="btn-group w-100" role="group">
+            <input type="radio" class="btn-check" name="loginType" id="userLogin" value="user" checked>
+            <label class="btn btn-outline-dark font-sans" for="userLogin">
+              <i class="bi bi-person"></i> User Login
+            </label>
+            
+            <input type="radio" class="btn-check" name="loginType" id="adminLogin" value="admin">
+            <label class="btn btn-outline-dark font-sans" for="adminLogin">
+              <i class="bi bi-shield-lock"></i> Admin Login
+            </label>
+          </div>
+        </div>
+
+        <!-- Login Form -->
+        <form method="POST" action="/login" class="auth-form needs-validation" id="loginForm">
+          <!-- User Email Field -->
+          <div class="mb-4" id="userEmailField">
+            <label for="email" class="form-label font-sans">Email Address</label>
+            <input 
+              type="email" 
+              class="form-control font-sans" 
+              id="email" 
+              name="email" 
+              placeholder="your.email@example.com" 
+              required
+            />
+            <small class="form-text">We'll never share your email with anyone else.</small>
+          </div>
+
+          <!-- Admin Username Field -->
+          <div class="mb-4" id="adminUsernameField" style="display: none;">
+            <label for="username" class="form-label font-sans">Admin Username</label>
+            <input 
+              type="text" 
+              class="form-control font-sans" 
+              id="username" 
+              name="username" 
+              placeholder="Enter admin username" 
+            />
+          </div>
+
+          <!-- Password Field -->
+          <div class="mb-4">
+            <label for="password" class="form-label font-sans">Password</label>
+            <div class="input-group">
+              <input 
+                type="password" 
+                class="form-control font-sans" 
+                id="password" 
+                name="password" 
+                placeholder="Enter your password" 
+                required
+              />
+              <button 
+                class="btn btn-outline-secondary font-sans" 
+                type="button" 
+                id="togglePassword"
+                onclick="togglePasswordVisibility()"
+              >
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+            <small class="form-text">Minimum 6 characters</small>
+          </div>
+
+          <!-- Hidden field to track login type -->
+          <input type="hidden" name="loginType" id="loginTypeInput" value="user">
+
+          <!-- Remember Me -->
+          <div class="mb-4">
+            <div class="form-check">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                id="rememberMe" 
+                name="rememberMe"
+              />
+              <label class="form-check-label font-sans" for="rememberMe">
+                Remember me
+              </label>
+            </div>
+          </div>
+
+          <!-- Sign In Button -->
+          <button type="submit" class="btn btn-luxury-primary w-100 mb-3 py-2 font-sans fw-600" id="submitBtn">
+            <i class="bi bi-box-arrow-right"></i> Sign In
+          </button>
+        </form>
+
+        <!-- Forgot Password -->
+        <div class="text-center mb-4">
+          <a href="#" class="auth-link">
+            <i class="bi bi-question-circle"></i> Forgot your password?
+          </a>
+        </div>
+
+        <!-- Divider -->
+        <div class="auth-divider">
+          <span class="auth-divider-text">OR</span>
+        </div>
+
+        <!-- Sign Up Link -->
+        <div class="text-center">
+          <p class="font-sans text-muted mb-3">Don't have an account?</p>
+          <a href="/register" class="btn btn-outline-dark w-100 py-2 font-sans fw-600">
+            Create New Account
+          </a>
+        </div>
+
+        <!-- Back Home -->
+        <div class="text-center mt-5">
+          <a href="/" class="auth-back-link">
+            <i class="bi bi-arrow-left"></i> Back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  // Handle login type toggle
+  document.getElementById('userLogin').addEventListener('change', function() {
+    if (this.checked) {
+      document.getElementById('userEmailField').style.display = 'block';
+      document.getElementById('adminUsernameField').style.display = 'none';
+      document.getElementById('email').required = true;
+      document.getElementById('username').required = false;
+      document.getElementById('loginTypeInput').value = 'user';
+      document.getElementById('submitBtn').innerHTML = '<i class="bi bi-box-arrow-right"></i> Sign In';
+    }
+  });
+
+  document.getElementById('adminLogin').addEventListener('change', function() {
+    if (this.checked) {
+      document.getElementById('userEmailField').style.display = 'none';
+      document.getElementById('adminUsernameField').style.display = 'block';
+      document.getElementById('email').required = false;
+      document.getElementById('username').required = true;
+      document.getElementById('loginTypeInput').value = 'admin';
+      document.getElementById('submitBtn').innerHTML = '<i class="bi bi-shield-lock"></i> Admin Login';
+    }
+  });
+
+  function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('password');
+    const toggleBtn = document.getElementById('togglePassword');
+    
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      toggleBtn.innerHTML = '<i class="bi bi-eye-slash"></i>';
+    } else {
+      passwordInput.type = 'password';
+      toggleBtn.innerHTML = '<i class="bi bi-eye"></i>';
+    }
+  }
+</script>
+
+<%- include('partials/footer') %>

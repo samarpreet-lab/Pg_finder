@@ -17,7 +17,7 @@
 </head>
 <body>
 
-<% if (!(typeof isAdmin !== 'undefined' && isAdmin)) { %>
+<% if (!(typeof isAdmin !== 'undefined' && isAdmin) && !(typeof isAuthPage !== 'undefined' && isAuthPage)) { %>
   <%- include('sidebar') %>
 <% } %>
 

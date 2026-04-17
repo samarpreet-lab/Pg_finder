@@ -998,6 +998,225 @@ body {
   z-index: 999;
 }
 
+/* ===== FULL WIDTH LAYOUT (NO SIDEBAR) ===== */
+body:has(main.luxury-main-full) {
+  background-color: var(--bg-luxury) !important;
+}
+
+.luxury-main-full {
+  margin-left: 0 !important;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-luxury);
+}
+
+/* ===== AUTHENTICATION PAGES ===== */
+.auth-page-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--bg-luxury) 0%, var(--bg-luxury-light) 100%);
+  padding: 2rem;
+}
+
+.auth-card {
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(113, 90, 62, 0.1);
+  border: 1px solid var(--border-light);
+  border-radius: 0;
+  padding: 0;
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-card-body {
+  padding: 3rem 2.5rem;
+}
+
+@media (max-width: 768px) {
+  .auth-card-body {
+    padding: 2rem 1.5rem;
+  }
+  
+  .heading-section {
+    font-size: 2rem;
+  }
+}
+
+/* Form elements in auth pages */
+.auth-form .form-label {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.auth-form .form-control,
+.auth-form .form-select {
+  border: 1px solid var(--border-color);
+  border-radius: 0;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  background-color: #fff;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.auth-form .form-control:focus,
+.auth-form .form-select:focus {
+  border-color: var(--text-secondary);
+  box-shadow: 0 0 0 0.2rem rgba(113, 90, 62, 0.1);
+  background-color: #fff;
+  color: var(--text-primary);
+}
+
+.auth-form .form-control::placeholder {
+  color: var(--text-muted);
+}
+
+.auth-form .form-control.is-invalid {
+  border-color: var(--danger-color);
+}
+
+.auth-form .invalid-feedback {
+  color: var(--danger-color);
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.auth-form .form-check-input {
+  border: 1px solid var(--border-color);
+  border-radius: 0;
+  width: 1.25em;
+  height: 1.25em;
+  margin-top: 0.3125em;
+  cursor: pointer;
+}
+
+.auth-form .form-check-input:checked {
+  background-color: var(--text-primary);
+  border-color: var(--text-primary);
+}
+
+.auth-form .form-check-label {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+.auth-form small.form-text {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Alert styles in auth pages */
+.auth-alert {
+  border-radius: 0;
+  border: none;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.alert-success {
+  background-color: var(--success-bg);
+  color: var(--success-color);
+  border: 1px solid rgba(18, 30, 20, 0.1);
+}
+
+.alert-danger {
+  background-color: var(--danger-bg);
+  color: var(--danger-color);
+  border: 1px solid rgba(147, 0, 10, 0.1);
+}
+
+.alert-dismissible .btn-close {
+  background: transparent;
+  opacity: 0.6;
+}
+
+/* Divider */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 2rem 0;
+  gap: 1rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.auth-divider-text {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+/* Links in auth pages */
+.auth-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.auth-link:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
+
+/* Input group */
+.input-group .btn-outline-secondary {
+  border-color: var(--border-color);
+  color: var(--text-muted);
+}
+
+.input-group .btn-outline-secondary:hover,
+.input-group .btn-outline-secondary:focus {
+  background-color: var(--bg-luxury-light);
+  border-color: var(--text-secondary);
+  color: var(--text-secondary);
+}
+
+/* Back link styling */
+.auth-back-link {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.3s;
+}
+
+.auth-back-link:hover {
+  color: var(--text-secondary);
+}
+
 /* Price value sizes */
 .price-value-large {
   font-size: 1.5rem;
