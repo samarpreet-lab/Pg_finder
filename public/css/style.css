@@ -177,6 +177,17 @@ body {
   color: #fff;
 }
 
+.sidebar-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sidebar-btns .btn {
+  width: 100%;
+  justify-content: center;
+}
+
 .btn-search {
   background-color: var(--text-primary);
   color: white;

@@ -5,16 +5,6 @@
     <span class="font-sans subheading-light">Affordable Living</span>
   </div>
   
-  <!-- Auth Links - Show when not logged in -->
-  <div class="d-flex flex-column gap-2 mb-4">
-    <a href="/login" class="btn btn-outline-dark btn-sm font-sans">
-      <i class="bi bi-box-arrow-in-right"></i> Sign In
-    </a>
-    <a href="/register" class="btn btn-luxury-primary btn-sm font-sans">
-      <i class="bi bi-person-plus"></i> Register
-    </a>
-  </div>
-  
   <nav class="flex-grow-1 d-flex flex-column gap-3">
     <a href="/" class="sidebar-nav-link">
       <i class="bi bi-house-door nav-icon"></i>Home
@@ -27,9 +17,16 @@
     </a>
   </nav>
   
-  <div class="mt-auto pt-4 border-top border-dark border-opacity-10 d-flex flex-column gap-3">
-    <a href="/logout" class="sidebar-nav-link">
+  <div class="sidebar-btns mt-auto pt-4 border-top border-dark border-opacity-10">
+    <a href="/login" class="btn btn-luxury-outline btn-sm font-sans">
+      <i class="bi bi-box-arrow-in-right"></i> Sign In
+    </a>
+    <a href="/register" class="btn btn-luxury-primary btn-sm font-sans">
+      <i class="bi bi-person-plus"></i> Register
+    </a>
+    <a href="/logout" class="sidebar-nav-link mt-3">
       <i class="bi bi-box-arrow-right nav-icon"></i>Sign Out
     </a>
   </div>
+
 </aside>
