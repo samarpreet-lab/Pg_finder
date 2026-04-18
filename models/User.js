@@ -63,16 +63,6 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-// Static method to get user by email
-userSchema.statics.getUserByEmail = async function(email) {
-  return await this.findOne({ email: email.toLowerCase() });
-};
-
-// Static method to create new user
-userSchema.statics.createUser = async function(userData) {
-  return await this.create(userData);
-};
-
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

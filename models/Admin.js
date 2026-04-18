@@ -36,11 +36,6 @@ const adminSchema = new mongoose.Schema({
   }
 });
 
-// Static method to get admin by username
-adminSchema.statics.getAdminByUsername = async function(username) {
-  return await this.findOne({ username: username.toLowerCase(), isActive: true });
-};
-
 const Admin = mongoose.model('Admin', adminSchema);
 
 module.exports = Admin;

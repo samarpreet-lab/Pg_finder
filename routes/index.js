@@ -5,29 +5,21 @@ const Booking = require('../models/Booking');
 const User = require('../models/User');
 const Admin = require('../models/Admin');
 const upload = require('../middleware/upload');
+const protect = require('../middleware/auth');
 
-// ============================================================================
-// AUTHENTICATION ROUTES
-// ============================================================================
-
-// Get Register Form
-// Displays the registration page for new users.
+// ====== REGISTER PAGE ======
+// Show the registration form to new users.
 router.get('/register', (req, res) => {
-  try {
-    res.render('register', { title: 'Create Account', isAuthPage: true });
-  } catch (error) {
-    console.error('Error loading register page:', error);
-    res.status(500).render('register', { title: 'Create Account', error: 'An error occurred', isAuthPage: true });
-  }
+  res.render('register', { title: 'Create Account', isAuthPage: true });
 });
 
-// Post Register Form
-// Processes user registration with validation and error handling.
+// ====== REGISTER SUBMISSION ======
+// Create a new user account after validating all the form fields.
 router.post('/register', async (req, res) => {
   try {
     const { fullName, email, phone, password, confirmPassword, userType, city, agreeTerms } = req.body;
 
-    // Validation
+    // Step 1: Check all required fields are filled
     if (!fullName || !email || !phone || !password || !confirmPassword || !userType) {
       return res.status(400).render('register', {
         title: 'Create Account',
@@ -36,7 +28,7 @@ router.post('/register', async (req, res) => {
       });
     }
 
-    // Password match check
+    // Step 2: Check passwords match
     if (password !== confirmPassword) {
       return res.status(400).render('register', {
         title: 'Create Account',
@@ -45,7 +37,7 @@ router.post('/register', async (req, res) => {
       });
     }
 
-    // Password length check
+    // Step 3: Check password is long enough
     if (password.length < 6) {
       return res.status(400).render('register', {
         title: 'Create Account',
@@ -54,7 +46,7 @@ router.post('/register', async (req, res) => {
       });
     }
 
-    // Phone number validation (10 digits)
+    // Step 4: Check phone is 10 digits
     if (!/^\d{10}$/.test(phone)) {
       return res.status(400).render('register', {
         title: 'Create Account',
@@ -63,7 +55,7 @@ router.post('/register', async (req, res) => {
       });
     }
 
-    // Terms agreement check
+    // Step 5: Check user agreed to terms
     if (!agreeTerms) {
       return res.status(400).render('register', {
         title: 'Create Account',
@@ -72,8 +64,8 @@ router.post('/register', async (req, res) => {
       });
     }
 
-    // Check if user already exists
-    const existingUser = await User.getUserByEmail(email);
+    // Step 6: Check if email already exists
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       return res.status(400).render('register', {
         title: 'Create Account',
@@ -82,27 +74,25 @@ router.post('/register', async (req, res) => {
       });
     }
 
-    // Create new user
-    const newUser = await User.createUser({
+    // Step 7: Create the new user
+    const newUser = await User.create({
       fullName,
       email: email.toLowerCase(),
       phone,
-      password, // In production, this should be hashed using bcrypt
+      password,
       userType,
       city
     });
 
-    console.log('User registered successfully:', newUser._id);
-
-    // Auto-login user after registration
+    // Step 8: Log the user in automatically by saving to session
     req.session.userId = newUser._id;
     req.session.userName = newUser.fullName;
     req.session.userEmail = newUser.email;
 
-    // Redirect to home page
+    // Step 9: Redirect to home
     res.redirect('/');
   } catch (error) {
-    console.error('Error during registration:', error);
+    console.error('Registration error:', error);
     res.status(500).render('register', {
       title: 'Create Account',
       error: 'An error occurred during registration. Please try again.',
@@ -111,25 +101,21 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Get Login Form
-// Displays the login page for existing users.
+// ====== LOGIN PAGE ======
+// Show the login form to users.
 router.get('/login', (req, res) => {
-  try {
-    res.render('login', { title: 'Sign In', isAuthPage: true });
-  } catch (error) {
-    console.error('Error loading login page:', error);
-    res.status(500).render('login', { title: 'Sign In', error: 'An error occurred', isAuthPage: true });
-  }
+  res.render('login', { title: 'Sign In', isAuthPage: true });
 });
 
-// Post Login Form
-// Processes user login with email and password verification, or admin login with username and password.
+// ====== LOGIN SUBMISSION ======
+// Check the email/password or username/password and create a session.
 router.post('/login', async (req, res) => {
   try {
-    const { loginType = 'user', email, username, password, rememberMe } = req.body;
+    const { loginType = 'user', email, username, password } = req.body;
 
+    // ====== ADMIN LOGIN PATH ======
     if (loginType === 'admin') {
-      // Admin Login
+      // Step 1: Check username and password are provided
       if (!username || !password) {
         return res.status(400).render('login', {
           title: 'Sign In',
@@ -138,8 +124,8 @@ router.post('/login', async (req, res) => {
         });
       }
 
-      // Find admin by username
-      const admin = await Admin.getAdminByUsername(username);
+      // Step 2: Find admin by username
+      const admin = await Admin.findOne({ username: username.toLowerCase(), isActive: true });
       if (!admin) {
         return res.status(401).render('login', {
           title: 'Sign In',
@@ -148,7 +134,7 @@ router.post('/login', async (req, res) => {
         });
       }
 
-      // Check password (in production, use bcrypt.compare)
+      // Step 3: Check password matches
       if (admin.password !== password) {
         return res.status(401).render('login', {
           title: 'Sign In',
@@ -157,59 +143,52 @@ router.post('/login', async (req, res) => {
         });
       }
 
-      // Set admin session
+      // Step 4: Save admin to session and redirect
       req.session.adminId = admin._id;
       req.session.adminUsername = admin.username;
       req.session.adminRole = admin.role;
       req.session.isAdmin = true;
-
-      console.log('Admin logged in successfully:', admin._id);
-
-      // Redirect to admin portal
       res.redirect('/admin');
-    } else {
-      // User Login
-      if (!email || !password) {
-        return res.status(400).render('login', {
-          title: 'Sign In',
-          error: 'Email and password are required',
-          isAuthPage: true
-        });
-      }
-
-      // Find user by email
-      const user = await User.getUserByEmail(email);
-      if (!user) {
-        return res.status(401).render('login', {
-          title: 'Sign In',
-          error: 'Invalid email or password',
-          isAuthPage: true
-        });
-      }
-
-      // Check password (in production, use bcrypt.compare)
-      if (user.password !== password) {
-        return res.status(401).render('login', {
-          title: 'Sign In',
-          error: 'Invalid email or password',
-          isAuthPage: true
-        });
-      }
-
-      // Set user session
-      req.session = req.session || {};
-      req.session.userId = user._id;
-      req.session.userName = user.fullName;
-      req.session.userEmail = user.email;
-      req.session.isAdmin = false;
-
-      console.log('User logged in successfully:', user._id);
-
-      // Redirect to home page
-      res.redirect('/');
+      return;
     }
+
+    // ====== REGULAR USER LOGIN PATH ======
+    // Step 1: Check email and password are provided
+    if (!email || !password) {
+      return res.status(400).render('login', {
+        title: 'Sign In',
+        error: 'Email and password are required',
+        isAuthPage: true
+      });
+    }
+
+    // Step 2: Find user by email
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      return res.status(401).render('login', {
+        title: 'Sign In',
+        error: 'Invalid email or password',
+        isAuthPage: true
+      });
+    }
+
+    // Step 3: Check password matches
+    if (user.password !== password) {
+      return res.status(401).render('login', {
+        title: 'Sign In',
+        error: 'Invalid email or password',
+        isAuthPage: true
+      });
+    }
+
+    // Step 4: Save user to session and redirect
+    req.session.userId = user._id;
+    req.session.userName = user.fullName;
+    req.session.userEmail = user.email;
+    req.session.isAdmin = false;
+    res.redirect('/');
   } catch (error) {
-    console.error('Error during login:', error);
+    console.error('Login error:', error);
     res.status(500).render('login', {
       title: 'Sign In',
       error: 'An error occurred during login. Please try again.',
@@ -218,50 +197,38 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Logout Route
-// Clears user/admin session and redirects to login page.
+// ====== LOGOUT ======
+// Clear the user session and send to login page.
 router.get('/logout', (req, res) => {
-  try {
-    req.session.destroy();
+  req.session.destroy(() => {
     res.redirect('/login');
-  } catch (error) {
-    console.error('Error during logout:', error);
-    res.status(500).send('An error occurred during logout');
-  }
+  });
 });
 
-// ============================================================================
-// ROOM & BOOKING ROUTES
-// ============================================================================
-
-// Home Page - Redirect to login if not authenticated
-// Loads available rooms and renders the landing page with featured listings.
-router.get('/', async (req, res) => {
+// ====== HOME PAGE ======
+// Show the landing page with 3 featured available rooms.
+router.get('/', protect, async (req, res) => {
   try {
-    // If not logged in, redirect to login page
-    if (!req.session || !req.session.userId) {
-      return res.redirect('/login');
-    }
-
-    const rooms = await Room.getAvailableRooms();
-    const featuredRooms = rooms.slice(0, 3);
-    res.render('index', { title: 'StayEase - Find Your Perfect Stay', rooms: featuredRooms });
+    const rooms = await Room.find({ isAvailable: true }).limit(3);
+    res.render('index', { title: 'StayEase - Find Your Perfect Stay', rooms });
   } catch (error) {
-    console.error('Error loading home page:', error);
+    console.error('Error loading home:', error);
     res.render('index', { title: 'StayEase - Find Your Perfect Stay', rooms: [] });
   }
 });
 
-// All Rooms Page
-// Displays the room catalog, optionally filtering by type, price, and search text.
-router.get('/rooms', async (req, res) => {
+// ====== ALL ROOMS PAGE ======
+// Display all available rooms with optional filters: type, price, and search text.
+router.get('/rooms', protect, async (req, res) => {
   try {
     const { type = '', search: searchQuery = '' } = req.query;
     const maxPrice = req.query.maxPrice ? parseInt(req.query.maxPrice, 10) : NaN;
     const search = searchQuery.toLowerCase().trim();
-    
-    const rooms = await Room.getAvailableRooms();
-    
+
+    // Step 1: Get all available rooms from database
+    const rooms = await Room.find({ isAvailable: true });
+
+    // Step 2: Filter rooms based on query parameters
     const filteredRooms = rooms.filter(room => {
       const typeMatch = !type || room.type === type;
       const priceMatch = isNaN(maxPrice) || room.monthlyPrice <= maxPrice;
@@ -269,21 +236,20 @@ router.get('/rooms', async (req, res) => {
       return typeMatch && priceMatch && searchMatch;
     });
 
+    // Step 3: Send filtered list to template
     res.render('rooms', { title: 'Browse Rooms', rooms: filteredRooms, query: req.query });
   } catch (error) {
-    console.error('Error loading rooms page:', error);
+    console.error('Error loading rooms:', error);
     res.render('rooms', { title: 'Browse Rooms', rooms: [], query: req.query });
   }
 });
 
-// Room Detail Page
-// Shows the full room detail page for a single room.
-router.get('/rooms/:id', async (req, res) => {
+// ====== ROOM DETAIL PAGE ======
+// Show full details of a single room, or redirect if not found.
+router.get('/rooms/:id', protect, async (req, res) => {
   try {
-    const room = await Room.getRoomById(req.params.id);
-    if (!room) {
-      return res.redirect('/rooms');
-    }
+    const room = await Room.findById(req.params.id);
+    if (!room) return res.redirect('/rooms');
     res.render('roomDetail', { title: room.name, room });
   } catch (error) {
     console.error('Error loading room detail:', error);
@@ -291,14 +257,12 @@ router.get('/rooms/:id', async (req, res) => {
   }
 });
 
-// Booking Form Page
-// Displays the booking form for a selected room.
-router.get('/book/:id', async (req, res) => {
+// ====== BOOKING FORM PAGE ======
+// Show the booking form for a specific room.
+router.get('/book/:id', protect, async (req, res) => {
   try {
-    const room = await Room.getRoomById(req.params.id);
-    if (!room) {
-      return res.redirect('/rooms');
-    }
+    const room = await Room.findById(req.params.id);
+    if (!room) return res.redirect('/rooms');
     res.render('bookingForm', { title: 'Book Room', room });
   } catch (error) {
     console.error('Error loading booking form:', error);
@@ -306,89 +270,67 @@ router.get('/book/:id', async (req, res) => {
   }
 });
 
-// Submit Booking with Aadhar Upload
-// Processes the booking form and creates a new booking record with file upload.
-router.post('/book/:id', upload.single('aadharPdf'), async (req, res) => {
+// ====== SUBMIT BOOKING ======
+// Accept booking form with Aadhar PDF upload and create a booking record.
+router.post('/book/:id', protect, upload.single('aadharPdf'), async (req, res) => {
   try {
     const { guestName, email, phone, aadharNumber, checkIn, checkOut, guests } = req.body;
-    
-    console.log('Booking request received:', { guestName, email, phone, aadharNumber, roomId: req.params.id });
-    
-    // Validate Aadhar number
-    if (!aadharNumber || !/^\d{12}$/.test(aadharNumber)) {
-      console.error('Invalid Aadhar number:', aadharNumber);
-      if (req.file) {
-        const fs = require('fs');
-        fs.unlinkSync(req.file.path);
-      }
-      const room = await Room.getRoomById(req.params.id);
-      return res.status(400).render('bookingForm', {
-        title: 'Book Room',
-        room: room,
-        error: 'Aadhar number must be exactly 12 digits'
-      });
+
+    // Step 1: Check room exists
+    const room = await Room.findById(req.params.id);
+    if (!room) {
+      if (req.file) require('fs').unlinkSync(req.file.path);
+      return res.redirect('/rooms');
     }
 
+    // Step 2: Prepare booking data
     const aadharPdf = req.file ? `/uploads/aadhar/${req.file.filename}` : null;
-    
-    console.log('Creating booking with:', { guestName, aadharNumber, roomId: req.params.id, aadharPdf });
-    
-    const booking = await Booking.createBooking(
-      guestName, 
-      email, 
-      phone, 
+    const bookingData = {
+      guestName,
+      email,
+      phone,
       aadharNumber,
-      req.params.id, 
-      checkIn, 
-      checkOut, 
-      guests, 
-      aadharPdf
-    );
-    
-    if (!booking) {
-      console.error('Booking creation failed - booking is null');
-      if (req.file) {
-        const fs = require('fs');
-        fs.unlinkSync(req.file.path);
-      }
-      const room = await Room.getRoomById(req.params.id);
-      return res.status(400).render('bookingForm', {
-        title: 'Book Room',
-        room: room,
-        error: 'Failed to create booking. Please verify room details and try again.'
-      });
-    }
-    
-    console.log('Booking created successfully:', booking._id);
+      aadharPdf,
+      aadharUploadDate: aadharPdf ? new Date() : null,
+      room: req.params.id,
+      checkIn,
+      checkOut,
+      guests: parseInt(guests),
+      monthlyRate: room.monthlyPrice,
+      totalPrice: room.monthlyPrice,
+      utilities: room.utilities,
+      status: 'Pending'
+    };
+
+    // Step 3: Create the booking
+    const booking = await Booking.create(bookingData);
+
+    // Step 4: Redirect to confirmation page
     res.redirect(`/confirmation/${booking._id}`);
   } catch (error) {
-    console.error('Error creating booking:', error);
-    if (req.file) {
-      const fs = require('fs');
-      fs.unlinkSync(req.file.path);
-    }
+    console.error('Booking error:', error);
+    // Clean up uploaded file if there's an error
+    if (req.file) require('fs').unlinkSync(req.file.path);
+
     try {
-      const room = await Room.getRoomById(req.params.id);
-      return res.status(500).render('bookingForm', {
+      const room = await Room.findById(req.params.id);
+      res.status(400).render('bookingForm', {
         title: 'Book Room',
-        room: room,
-        error: 'An error occurred while creating your booking. Please try again.'
+        room,
+        error: error.message || 'An error occurred. Please try again.'
       });
     } catch (e) {
-      return res.redirect('/rooms');
+      res.redirect('/rooms');
     }
   }
 });
 
-// Confirmation Page
-// Shows a confirmation message and booking details after a successful reservation.
-router.get('/confirmation/:id', async (req, res) => {
+// ====== CONFIRMATION PAGE ======
+// Show booking confirmation details after successful reservation.
+router.get('/confirmation/:id', protect, async (req, res) => {
   try {
-    const booking = await Booking.getBookingById(req.params.id);
-    if (!booking) {
-      return res.redirect('/rooms');
-    }
-    
+    const booking = await Booking.findById(req.params.id).populate('room');
+    if (!booking) return res.redirect('/rooms');
     res.render('confirmation', { title: 'Booking Confirmed!', booking });
   } catch (error) {
     console.error('Error loading confirmation:', error);
@@ -396,15 +338,15 @@ router.get('/confirmation/:id', async (req, res) => {
   }
 });
 
-// View Aadhar PDF
-// Serves the uploaded Aadhar PDF for viewing/downloading.
-router.get('/view-aadhar/:id', async (req, res) => {
+// ====== VIEW/DOWNLOAD AADHAR PDF ======
+// Allow user to download their uploaded Aadhar PDF.
+router.get('/view-aadhar/:id', protect, async (req, res) => {
   try {
-    const booking = await Booking.getBookingById(req.params.id);
+    const booking = await Booking.findById(req.params.id);
     if (!booking || !booking.aadharPdf) {
       return res.status(404).send('Aadhar document not found');
     }
-    
+
     const filePath = require('path').join(__dirname, '../public', booking.aadharPdf);
     res.download(filePath, `aadhar-${booking.aadharNumber}.pdf`);
   } catch (error) {
@@ -413,11 +355,11 @@ router.get('/view-aadhar/:id', async (req, res) => {
   }
 });
 
-// My Bookings Page
-// Displays all bookings with room details.
-router.get('/bookings', async (req, res) => {
+// ====== MY BOOKINGS PAGE ======
+// Show all bookings for the logged-in user with room details.
+router.get('/bookings', protect, async (req, res) => {
   try {
-    const bookings = await Booking.getAllBookings();
+    const bookings = await Booking.find().populate('room').sort({ createdAt: -1 });
     res.render('bookings', { title: 'My Bookings', bookings });
   } catch (error) {
     console.error('Error loading bookings:', error);
