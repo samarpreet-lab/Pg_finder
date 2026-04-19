@@ -67,7 +67,7 @@ router.route('/book/:id')
       const room = await Room.findById(req.params.id);
       if (!room) throw new Error('Room not found');
       const booking = await Booking.create({
-        ...req.body, room: room._id, aadharPdf: req.file ? `/uploads/aadhar/${req.file.filename}` : null,
+        ...req.body, user: req.session.userId, room: room._id, aadharPdf: req.file ? `/uploads/aadhar/${req.file.filename}` : null,
         aadharUploadDate: req.file ? new Date() : null, monthlyRate: room.monthlyPrice, totalPrice: room.monthlyPrice,
         utilities: room.utilities, guests: parseInt(req.body.guests)
       });
@@ -85,7 +85,7 @@ router.get('/confirmation/:id', protect, async (req, res) => {
 });
 
 router.get('/bookings', protect, async (req, res) => {
-  const bookings = await Booking.find().populate('room').sort({ createdAt: -1 }).catch(() => []);
+  const bookings = await Booking.find({ user: req.session.userId }).populate('room').sort({ createdAt: -1 }).catch(() => []);
   res.render('bookings', { title: 'My Bookings', bookings });
 });
 

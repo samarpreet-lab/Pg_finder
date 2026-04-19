@@ -31,6 +31,10 @@ const bookingSchema = new mongoose.Schema({
   },
   aadharPdf: String,
   aadharUploadDate: Date,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
   room: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Room',
