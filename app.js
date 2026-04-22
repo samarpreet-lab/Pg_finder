@@ -3,10 +3,11 @@ const path = require('path');
 const session = require('express-session');
 const connectDB = require('./config/database');
 
-connectDB();
-
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Connect to MongoDB
+connectDB().catch(err => console.error('DB connection failed:', err.message));
 
 app.use(session({
   secret: 'stayease-secret-key',

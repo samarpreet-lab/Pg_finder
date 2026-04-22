@@ -64,17 +64,39 @@ router.route('/book/:id')
   })
   .post(upload.single('aadharPdf'), async (req, res) => {
     try {
+      console.log('📝 Booking request received:', { userId: req.session.userId, roomId: req.params.id });
       const room = await Room.findById(req.params.id);
-      if (!room) throw new Error('Room not found');
-      const booking = await Booking.create({
-        ...req.body, user: req.session.userId, room: room._id, aadharPdf: req.file ? `/uploads/aadhar/${req.file.filename}` : null,
-        aadharUploadDate: req.file ? new Date() : null, monthlyRate: room.monthlyPrice, totalPrice: room.monthlyPrice,
-        utilities: room.utilities, guests: parseInt(req.body.guests)
-      });
+      if (!room) {
+        console.log('❌ Room not found:', req.params.id);
+        throw new Error('Room not found');
+      }
+      console.log('✓ Room found:', room.name);
+      
+      const bookingData = {
+        ...req.body,
+        user: req.session.userId,
+        room: room._id,
+        aadharPdf: req.file ? `/uploads/aadhar/${req.file.filename}` : null,
+        aadharUploadDate: req.file ? new Date() : null,
+        monthlyRate: room.monthlyPrice,
+        totalPrice: room.monthlyPrice,
+        utilities: room.utilities,
+        guests: parseInt(req.body.guests)
+      };
+      console.log('📦 Booking data:', bookingData);
+      
+      const booking = await Booking.create(bookingData);
+      console.log('✅ Booking created successfully:', booking._id);
       res.redirect(`/confirmation/${booking._id}`);
     } catch (error) {
+      console.error('❌ Booking error:', error.message);
+      console.error('Stack:', error.stack);
       if (req.file) require('fs').unlinkSync(req.file.path);
-      res.redirect('/rooms');
+      res.status(400).render('bookingForm', { 
+        title: 'Book Room', 
+        room: await Room.findById(req.params.id), 
+        error: error.message 
+      });
     }
   });
 
@@ -85,8 +107,16 @@ router.get('/confirmation/:id', protect, async (req, res) => {
 });
 
 router.get('/bookings', protect, async (req, res) => {
-  const bookings = await Booking.find({ user: req.session.userId }).populate('room').sort({ createdAt: -1 }).catch(() => []);
-  res.render('bookings', { title: 'My Bookings', bookings });
+  try {
+    console.log('📋 Fetching bookings for user:', req.session.userId);
+    const bookings = await Booking.find({ user: req.session.userId }).populate('room').sort({ createdAt: -1 }).catch(() => []);
+    console.log('✓ Bookings found:', bookings.length);
+    bookings.forEach(b => console.log('  -', b._id, b.guestName, b.status));
+    res.render('bookings', { title: 'My Bookings', bookings });
+  } catch (error) {
+    console.error('❌ Error fetching bookings:', error.message);
+    res.render('bookings', { title: 'My Bookings', bookings: [] });
+  }
 });
 
 router.get('/view-aadhar/:id', protect, async (req, res) => {
